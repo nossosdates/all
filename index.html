@@ -726,6 +726,13 @@ input[type=checkbox]{ accent-color: var(--gold); }
   .place-card .pc-thumb, .dt-hero, .dt-badge{ background: linear-gradient(150deg, color-mix(in srgb, var(--cat-color, var(--gold)) 86%, white), var(--cat-color, var(--gold))); color:#fff; box-shadow:0 6px 14px -6px color-mix(in srgb, var(--cat-color, var(--gold)) 70%, transparent); }
   .place-card .pc-cat, .dt-cat{ color: color-mix(in srgb, var(--cat-color, var(--gold)) 60%, white); }
 }
+
+/* card único do casal */
+.juntos-card{ display:block; }
+.juntos-card .jc-row{ display:flex; align-items:center; gap:14px; }
+.juntos-card .jc-foot{ display:flex; align-items:center; gap:8px; margin-top:13px; padding:10px 12px; border-radius:14px; background:color-mix(in srgb, var(--gold) 9%, var(--surface)); font-size:13px; font-weight:700; }
+.juntos-card .jc-fic{ display:flex; color:var(--gold); flex:none; }
+.juntos-card .jc-ft{ flex:1; min-width:0; }
 </style>
 </head>
 <body>
@@ -861,7 +868,7 @@ input[type=checkbox]{ accent-color: var(--gold); }
       <button class="menu-row" onclick="closeOverlay('overlayMenu'); openOverlayHistorico();"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.3v5l3.3 1.9"/></svg></span><span class="mr-t">Histórico de dates</span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
       <button class="menu-row" onclick="closeOverlay('overlayMenu'); openOverlayGaleria();"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></span><span class="mr-t">Galeria de memórias</span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
       <button class="menu-row" onclick="closeOverlay('overlayMenu'); openOverlayRelacionamento();"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.3s-7.3-4.5-9.7-9C.7 7.8 2.1 4.5 5.3 3.5a5.5 5.5 0 0 1 6.7 2.4A5.5 5.5 0 0 1 18.7 3.5c3.2 1 4.6 4.3 3 7.8-2.4 4.5-9.7 9-9.7 9Z"/></svg></span><span class="mr-t">Nossa história</span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
-      <button class="menu-row" onclick="closeOverlay('overlayMenu'); requireAuth(openCategoriasManager);"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2.5v2.4M12 19.1v2.4M4.6 4.6l1.7 1.7M17.7 17.7l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.6 19.4l1.7-1.7M17.7 6.3l1.7-1.7"/></svg></span><span class="mr-t">Editar categorias</span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
+      <button class="menu-row" onclick="closeOverlay('overlayMenu'); requireAuth(openCategoriasManager);"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2.5v2.4M12 19.1v2.4M4.6 4.6l1.7 1.7M17.7 17.7l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.6 19.4l1.7-1.7M17.7 6.3l1.7-1.7"/></svg></span><span class="mr-t">Categorias e ícones<small style="display:block;font-weight:500;font-size:11.5px;color:var(--text-dim)">Cores e +23 ícones novos</small></span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
       <button class="menu-row" onclick="closeOverlay('overlayMenu'); openEspeciais();"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></span><span class="mr-t">Datas especiais<small style="display:block;font-weight:500;font-size:11.5px;color:var(--text-dim)">Mesversários, aniversários e lembretes</small></span><span class="pro-pill">PRO</span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
       <button class="menu-row" onclick="closeOverlay('overlayMenu'); openRetro();"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V11M10 20V4M16 20v-6M22 20H2"/></svg></span><span class="mr-t">Retrospectiva do casal<small style="display:block;font-weight:500;font-size:11.5px;color:var(--text-dim)">O resumo do ano de vocês</small></span><span class="pro-pill">PRO</span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
       <button class="menu-row" onclick="closeOverlay('overlayMenu'); openPacotes();"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m21 8-9-5-9 5v8l9 5 9-5V8Z"/><path d="m3 8 9 5 9-5M12 13v8"/></svg></span><span class="mr-t">Pacotes de dates<small style="display:block;font-weight:500;font-size:11.5px;color:var(--text-dim)">Coleções de ideias prontas</small></span><span class="pro-pill">PRO</span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
@@ -906,6 +913,7 @@ input[type=checkbox]{ accent-color: var(--gold); }
     <div class="field">
       <label>Vocês estão</label>
       <div class="chip-row" id="fStatusChips">
+        <button type="button" class="chip" data-s="conhecendo" onclick="setRelStatus('conhecendo')">Se conhecendo</button>
         <button type="button" class="chip" data-s="namorando" onclick="setRelStatus('namorando')">Namorando</button>
         <button type="button" class="chip" data-s="casados" onclick="setRelStatus('casados')">Casados</button>
       </div>
@@ -914,12 +922,12 @@ input[type=checkbox]{ accent-color: var(--gold); }
       <label>Data do casamento</label>
       <input type="date" id="fWeddingDate">
     </div>
-    <div class="field">
+    <div class="field" id="fStartF">
       <label id="fStartLbl">Namorando desde (quando pediu em namoro)</label>
       <input type="date" id="fStartDate">
     </div>
     <div class="field">
-      <label>Primeiro encontro (opcional)</label>
+      <label id="fFirstLbl">Primeiro encontro (opcional)</label>
       <input type="date" id="fFirstDate">
       <label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-weight:500;cursor:pointer"><input type="checkbox" id="fFirstUnknown" onchange="syncFirstUnknown('f')" style="width:16px;height:16px"> Não lembro do primeiro encontro</label>
     </div>
@@ -1097,7 +1105,7 @@ input[type=checkbox]{ accent-color: var(--gold); }
     <div class="sheet-handle"></div>
     <h2>Categorias</h2>
     <div id="categoriasList" style="display:flex; flex-direction:column; gap:8px; margin-bottom:14px;"></div>
-    <button class="btn btn-ghost" style="width:100%" onclick="addCategoria()">+ Adicionar categoria</button>
+    <button class="btn btn-ghost" style="width:100%" onclick="addCategoria()">+ Adicionar categoria com ícone <span class="pro-pill" style="display:inline-block;margin-left:6px">PRO</span></button>
     <div class="sheet-actions">
       <button class="btn btn-ghost" onclick="closeOverlay('overlayCategorias')">Fechar</button>
       <button class="btn btn-primary" onclick="saveCategorias()">Salvar</button>
@@ -1139,11 +1147,11 @@ input[type=checkbox]{ accent-color: var(--gold); }
       <div class="field"><label>Seu nome</label><input type="text" id="cMe" autocomplete="given-name"></div>
       <div class="field"><label>Nome do(a) parceiro(a)</label><input type="text" id="cPartner"></div>
       <div class="field"><label>Vocês estão</label>
-        <div class="chip-row" id="cStatusChips"><button type="button" class="chip selected" data-s="namorando" onclick="gateStatus('namorando')">Namorando</button><button type="button" class="chip" data-s="casados" onclick="gateStatus('casados')">Casados</button></div>
+        <div class="chip-row" id="cStatusChips"><button type="button" class="chip" data-s="conhecendo" onclick="gateStatus('conhecendo')">Se conhecendo</button><button type="button" class="chip selected" data-s="namorando" onclick="gateStatus('namorando')">Namorando</button><button type="button" class="chip" data-s="casados" onclick="gateStatus('casados')">Casados</button></div>
       </div>
       <div class="field" id="cWeddingF" style="display:none"><label>Data do casamento</label><input type="date" id="cWedding"></div>
-      <div class="field"><label>Pediu em namoro em</label><input type="date" id="cStart"></div>
-      <div class="field"><label>Primeiro encontro</label><input type="date" id="cFirst">
+      <div class="field" id="cStartF"><label>Pediu em namoro em</label><input type="date" id="cStart"></div>
+      <div class="field"><label id="cFirstLbl">Primeiro encontro</label><input type="date" id="cFirst">
         <label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-weight:500;cursor:pointer"><input type="checkbox" id="cUnknown" onchange="syncFirstUnknown('c')" style="width:16px;height:16px"> Não lembro do primeiro encontro</label>
       </div>
       <p class="gate-p small">Tudo isso é opcional e dá pra mudar depois em Menu → Nossa história.</p>
@@ -1552,6 +1560,8 @@ function setRelStatus(st){
   relStatus = st;
   document.querySelectorAll('#fStatusChips .chip').forEach(c=>c.classList.toggle('selected', c.dataset.s===st));
   document.getElementById('fWeddingF').style.display = st==='casados' ? 'block' : 'none';
+  document.getElementById('fStartF').style.display = st==='conhecendo' ? 'none' : 'block';
+  document.getElementById('fFirstLbl').textContent = st==='conhecendo' ? 'Data do primeiro date' : 'Primeiro encontro (opcional)';
   document.getElementById('fStartLbl').textContent = st==='casados' ? 'Namoro desde (quando pediu em namoro)' : 'Namorando desde (quando pediu em namoro)';
 }
 function syncFirstUnknown(pfx){
@@ -1593,24 +1603,47 @@ function yearsMonths(startStr){
   if(partes.length===0) partes.push(days===1? '1 dia':days+' dias');
   return partes.join(' e ');
 }
+function tempoConhecendo(str){
+  const start = parseDate(str), now = new Date(); now.setHours(0,0,0,0);
+  const days = Math.round((now - start) / 86400000);
+  if(days < 0) return null;
+  if(days === 0) return 'hoje';
+  if(days < 7) return days===1 ? '1 dia' : days+' dias';
+  if(days < 56){ const w = Math.floor(days/7); return w===1 ? '1 semana' : w+' semanas'; }
+  return yearsMonths(str);
+}
 function renderJuntosHa(){
   const el = document.getElementById('juntosHaBanner');
   if(!el) return;
   const heart = `<span class="jc-ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="var(--gold)"><path d="M12 20.3s-7.3-4.5-9.7-9C.7 7.8 2.1 4.5 5.3 3.5a5.5 5.5 0 0 1 6.7 2.4A5.5 5.5 0 0 1 18.7 3.5c3.2 1 4.6 4.3 3 7.8-2.4 4.5-9.7 9-9.7 9Z"/></svg></span>`;
   const chev = `<span style="color:var(--text-faint);display:flex"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></span>`;
+  const row = (t,s)=>`<div class="jc-row">${heart}<div style="flex:1;min-width:0"><div class="jc-t">${t}</div><div class="jc-s">${s}</div></div>${chev}</div>`;
+  const conhecendo = state.status==='conhecendo';
   const casados = state.status==='casados' && state.weddingDate;
-  const ref = casados ? state.weddingDate : state.startDate;
+  const ref = conhecendo ? state.firstDate : (casados ? state.weddingDate : state.startDate);
   if(!ref){
-    el.innerHTML = `${heart}<div style="flex:1"><div class="jc-t">Nossa história</div><div class="jc-s">Toque pra contar desde quando vocês estão juntos</div></div>${chev}`;
+    el.innerHTML = row('Nossa história', conhecendo ? 'Toque pra contar quando foi o primeiro date' : 'Toque pra contar desde quando vocês estão juntos');
     return;
   }
-  const tempo = yearsMonths(ref);
+  const tempo = conhecendo ? tempoConhecendo(ref) : yearsMonths(ref);
   if(tempo===null){ el.innerHTML=''; return; }
+  if(conhecendo){
+    const t = tempo==='hoje' ? 'Primeiro date <em>hoje</em>' : `Se conhecendo há <em>${tempo}</em>`;
+    el.innerHTML = row(t, `Primeiro date em ${formatDateLong(state.firstDate)}`);
+    return;
+  }
   const sub = [];
   if(casados){ sub.push(`Casados desde ${formatDateLong(state.weddingDate)}`); if(state.startDate) sub.push(`Namoro desde ${formatDateLong(state.startDate)}`); }
   else sub.push(`Namorando desde ${formatDateLong(state.startDate)}`);
   if(state.firstDate) sub.push(`Primeiro encontro em ${formatDateLong(state.firstDate)}`);
-  el.innerHTML = `${heart}<div style="flex:1;min-width:0"><div class="jc-t">${casados?'Casados há':'Juntos há'} <em>${tempo}</em></div><div class="jc-s">${sub.join('<br>')}</div></div>${chev}`;
+  let foot = '';
+  const ser = specialSeries();
+  if(ser.length){
+    const x = ser[0], n = dayDiff(x.next), pro = planInfo().pro;
+    const txt = !pro ? 'Mesversários e aniversários' : (n===0 ? 'Hoje: '+x.title : n===1 ? 'Amanhã: '+x.title : 'Faltam '+n+' dias para '+x.title);
+    foot = `<div class="jc-foot" onclick="event.stopPropagation();openEspeciais()"><span class="jc-fic">${_ic('calendar',16)}</span><span class="jc-ft">${txt}</span>${pro ? '' : '<span class="pro-pill" style="display:inline-block">PRO</span>'}</div>`;
+  }
+  el.innerHTML = row(`${casados?'Casados há':'Juntos há'} <em>${tempo}</em>`, sub.join('<br>')) + foot;
 }
 function goSearch(){
   setScreen('ideias');
@@ -2407,7 +2440,7 @@ function openCategoriasManager(){
   renderCategoriasList();
   openOverlayEl('overlayCategorias');
 }
-function catBadgeBg(hex){ return `linear-gradient(150deg, color-mix(in srgb, ${hex} 88%, black), color-mix(in srgb, ${hex} 62%, black))`; }
+function catBadgeBg(hex){ return `linear-gradient(160deg, color-mix(in srgb, ${hex} 90%, white), ${hex})`; }
 function renderCategoriasList(){
   document.getElementById('categoriasList').innerHTML = `<div class="cat-hint">Toque no ícone para trocar a cor.</div>` + categoriasEdit.map((c,i)=>`
     <div class="cat-row">
@@ -2634,6 +2667,8 @@ function gateStatus(st){
   gStatusSel = st;
   document.querySelectorAll('#cStatusChips .chip').forEach(c=>c.classList.toggle('selected', c.dataset.s===st));
   $g('cWeddingF').style.display = st==='casados' ? 'block' : 'none';
+  $g('cStartF').style.display = st==='conhecendo' ? 'none' : 'block';
+  $g('cFirstLbl').textContent = st==='conhecendo' ? 'Data do primeiro date' : 'Primeiro encontro';
 }
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 function genCode(){
@@ -2648,7 +2683,7 @@ async function gateCreate(){
   const docData = {
     members: [ME.uid], memberNames: { [ME.uid]: me },
     places: [], events: [], categories: DEFAULT_CATEGORIES.map(c=>({...c})),
-    startDate: $g('cStart').value || null,
+    startDate: gStatusSel==='conhecendo' ? null : ($g('cStart').value || null),
     firstDate: unknown ? null : ($g('cFirst').value || null),
     firstUnknown: unknown,
     weddingDate: gStatusSel==='casados' ? ($g('cWedding').value || null) : null,
@@ -2817,18 +2852,18 @@ function whenTxt(n){ return n===0 ? 'hoje!' : n===1 ? 'amanhã' : 'em '+n+' dias
 
 /* ---------- PRO: categorias extras ---------- */
 const CATALOGO = [
-  {key:'cafe', label:'Café', hex:'#B98A5E'}, {key:'cinema', label:'Cinema', hex:'#8393E0'},
-  {key:'praia', label:'Praia', hex:'#4FA8A0'}, {key:'musica', label:'Show', hex:'#B97BC9'},
-  {key:'jogos', label:'Jogos', hex:'#6C8EE0'}, {key:'spa', label:'Spa', hex:'#C97B94'},
-  {key:'pets', label:'Pets', hex:'#D9A544'}, {key:'compras', label:'Compras', hex:'#E8735A'},
-  {key:'festa', label:'Festa', hex:'#D97BB0'}, {key:'esporte', label:'Esporte', hex:'#7FB06B'},
-  {key:'livraria', label:'Livraria', hex:'#5FB3D9'}, {key:'fotos', label:'Fotos', hex:'#8BA0A8'},
-  {key:'bar', label:'Bar', hex:'#E0795F'}, {key:'sorvete', label:'Sorvete', hex:'#D97BB0'},
-  {key:'parque', label:'Parque', hex:'#7FB06B'}, {key:'museu', label:'Museu', hex:'#8393E0'},
-  {key:'cozinhar', label:'Cozinhar', hex:'#D9A544'}, {key:'serie', label:'Série em casa', hex:'#6C8EE0'},
-  {key:'bike', label:'Bike', hex:'#4FA8A0'}, {key:'camping', label:'Camping', hex:'#7FB06B'},
-  {key:'vinho', label:'Vinho', hex:'#B2566E'}, {key:'karaoke', label:'Karaokê', hex:'#B97BC9'},
-  {key:'presente', label:'Presente', hex:'#D9356F'},
+  {key:'cafe', label:'Café', hex:'#C2763A'}, {key:'cinema', label:'Cinema', hex:'#5B6CF0'},
+  {key:'praia', label:'Praia', hex:'#0EA5A0'}, {key:'musica', label:'Show', hex:'#A855F7'},
+  {key:'jogos', label:'Jogos', hex:'#3B82F6'}, {key:'spa', label:'Spa', hex:'#F06292'},
+  {key:'pets', label:'Pets', hex:'#E8A10C'}, {key:'compras', label:'Compras', hex:'#F4623A'},
+  {key:'festa', label:'Festa', hex:'#EC4899'}, {key:'esporte', label:'Esporte', hex:'#22A559'},
+  {key:'livraria', label:'Livraria', hex:'#0EA5E9'}, {key:'fotos', label:'Fotos', hex:'#64748B'},
+  {key:'bar', label:'Bar', hex:'#EF5B3F'}, {key:'sorvete', label:'Sorvete', hex:'#EC4899'},
+  {key:'parque', label:'Parque', hex:'#22A559'}, {key:'museu', label:'Museu', hex:'#5B6CF0'},
+  {key:'cozinhar', label:'Cozinhar', hex:'#E8A10C'}, {key:'serie', label:'Série em casa', hex:'#3B82F6'},
+  {key:'bike', label:'Bike', hex:'#0EA5A0'}, {key:'camping', label:'Camping', hex:'#22A559'},
+  {key:'vinho', label:'Vinho', hex:'#B91C5C'}, {key:'karaoke', label:'Karaokê', hex:'#A855F7'},
+  {key:'presente', label:'Presente', hex:'#E11D74'},
 ];
 Object.assign(CAT_ICON_INNER, {
   cafe: `<path d="M4 8h12v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V8Z"/><path d="M16 10h2a2 2 0 0 1 0 4h-2"/><path d="M8 3v2M12 3v2"/>`,
@@ -2884,7 +2919,7 @@ function specialSeries(){
   const out = [];
   const today = new Date(); today.setHours(0,0,0,0);
   const nextMonthly = s=>{ let n = (today.getFullYear()-s.getFullYear())*12 + (today.getMonth()-s.getMonth()); if(n<1) n=1; let d = addMonthsClamped(s,n); while(d<today){ n++; d = addMonthsClamped(s,n); } return {n, d}; };
-  if(state.startDate){
+  if(state.startDate && state.status!=='conhecendo'){
     const s = parseDate(state.startDate);
     const m = nextMonthly(s);
     const isYear = m.n%12===0;
@@ -2904,14 +2939,7 @@ function specialSeries(){
   }
   return out.sort((a,b)=>a.next-b.next);
 }
-function renderEspeciaisCard(){
-  const el = $g('especiaisCard'); if(!el) return;
-  const ser = specialSeries();
-  if(!ser.length){ el.style.display='none'; return; }
-  const x = ser[0], n = dayDiff(x.next), pro = planInfo().pro;
-  el.style.display = 'flex';
-  el.innerHTML = `<span class="sp-ic">${_ic('calendar',20)}</span><div style="flex:1;min-width:0"><div class="sp-k">Próxima data especial</div><div class="sp-t">${pro? x.title : 'Mesversários e aniversários'}</div></div>${pro? `<span class="sp-when">${whenTxt(n)}</span>` : '<span class="pro-pill" style="display:inline-block">PRO</span>'}`;
-}
+function renderEspeciaisCard(){ const el=$g('especiaisCard'); if(el) el.style.display='none'; renderJuntosHa(); }
 function openEspeciais(){
   if(!planInfo().pro){ openPlano('especiais'); return; }
   const ser = specialSeries();
