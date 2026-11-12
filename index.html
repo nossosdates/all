@@ -714,7 +714,7 @@ input[type=checkbox]{ accent-color: var(--gold); }
 .cal-cell.other-month{ opacity:.4; }
 
 /* cores vivas em todas as telas */
-:root{ --cat-restaurante:#E5484D; --cat-viagem:#0EA5A0; --cat-batevolta:#E8900C; --cat-casa:#8B5CF6; --cat-cultura:#3B82F6; --cat-aventura:#22A559; --cat-experiencia:#EC4899; }
+:root{ --cat-restaurante:#E5484D; --cat-viagem:#0EA5A0; --cat-batevolta:#5B5BEF; --cat-casa:#8B5CF6; --cat-cultura:#3B82F6; --cat-aventura:#22A559; --cat-experiencia:#EC4899; }
 .sortear-tile.t1{ background: linear-gradient(150deg, #6B6DF8, #4747DE); }
 .sortear-tile.t2{ background: linear-gradient(150deg, #1CC0B2, #0B9490); }
 .place-card .pc-thumb, .dt-hero, .dt-badge{ background: linear-gradient(150deg, color-mix(in srgb, var(--cat-color, var(--gold)) 86%, white), var(--cat-color, var(--gold))); color:#fff; }
@@ -737,6 +737,28 @@ input[type=checkbox]{ accent-color: var(--gold); }
 /* botão X nas folhas */
 .sheet-x{ float:right; position:sticky; top:0; z-index:5; width:36px; height:36px; margin:-6px -6px 0 10px; border-radius:50%; border:0; display:flex; align-items:center; justify-content:center; background:color-mix(in srgb, var(--text) 9%, var(--bg-soft)); color:var(--text); cursor:pointer; }
 .sheet-x:active{ transform:scale(.94); }
+
+.cat-edit-link{ margin-left:auto; border:0; background:none; color:var(--gold); font-weight:800; font-size:14px; padding:6px 4px; cursor:pointer; }
+.categoria-tile.cat-new{ background:transparent !important; box-shadow:none !important; border:2px dashed color-mix(in srgb, var(--gold) 45%, transparent); }
+.categoria-tile.cat-new .ic, .categoria-tile.cat-new .lbl{ color:var(--gold); text-shadow:none; }
+.categoria-tile.cat-new .ic svg{ width:40px; height:40px; stroke-width:2; }
+
+.cat-badge{ border:0; cursor:pointer; }
+.cat-swatches{ display:grid; grid-template-columns:repeat(6,1fr); gap:10px; padding:10px 4px 14px 4px; }
+.cat-sw{ aspect-ratio:1; border-radius:50%; border:0; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,.18); }
+.cat-sw.on{ outline:3px solid var(--text); outline-offset:2px; }
+
+.categoria-tile{ border:0; font:inherit; }
+.categoria-tile.wiggle{ position:relative; touch-action:none; cursor:grab; user-select:none; -webkit-user-select:none; animation:wig .3s ease-in-out infinite alternate; }
+.categoria-tile.wiggle:nth-child(2n){ animation-direction:alternate-reverse; }
+@keyframes wig{ from{ transform:rotate(-1.3deg); } to{ transform:rotate(1.3deg); } }
+.categoria-tile.dragging{ animation:none !important; z-index:20; opacity:.93; transition:none; box-shadow:0 16px 32px rgba(0,0,0,.3); }
+.categoria-tile.drop{ outline:3px dashed var(--text); outline-offset:3px; }
+.cat-x{ position:absolute; top:-7px; left:-7px; width:26px; height:26px; border-radius:50%; border:0; background:#2b2326; color:#fff; display:flex; align-items:center; justify-content:center; z-index:3; box-shadow:0 2px 6px rgba(0,0,0,.3); cursor:pointer; }
+.cat-edit-hint{ font-size:12.5px; color:var(--text-dim); margin:-4px 0 12px; }
+.categoria-tile.cat-new{ cursor:pointer; }
+@media (prefers-reduced-motion:reduce){ .categoria-tile.wiggle{ animation:none; } }
+.categoria-tile{ -webkit-touch-callout:none; -webkit-user-select:none; user-select:none; }
 </style>
 </head>
 <body>
@@ -796,7 +818,8 @@ input[type=checkbox]{ accent-color: var(--gold); }
   </div>
 
   <div class="section">
-    <div class="section-head"><div class="lead">Categorias</div></div>
+    <div class="section-head"><div class="lead">Categorias</div><button class="cat-edit-link" id="catEditBtn" onclick="toggleCatEdit()">Editar</button></div>
+    <div class="cat-edit-hint" id="catEditHint" style="display:none">Arraste para mudar a ordem · toque para mudar a cor</div>
     <div class="categorias-grid" id="categoriasGrid"></div>
   </div>
 
@@ -815,7 +838,6 @@ input[type=checkbox]{ accent-color: var(--gold); }
       <option value="visitado">Mais visitado</option>
     </select>
     <button class="toggle-opt" id="filtroFavoritosBtn" style="width:auto;flex:none;padding:7px 12px" onclick="toggleFiltroFavoritos()"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:4px"><path d="M12 20.3s-7.3-4.5-9.7-9C.7 7.8 2.1 4.5 5.3 3.5a5.5 5.5 0 0 1 6.7 2.4A5.5 5.5 0 0 1 18.7 3.5c3.2 1 4.6 4.3 3 7.8-2.4 4.5-9.7 9-9.7 9Z"/></svg> Favoritos</button>
-    <button class="icon-btn" style="width:34px;height:34px;font-size:14px" onclick="requireAuth(openCategoriasManager)" title="Gerenciar categorias"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2.5v2.4M12 19.1v2.4M4.6 4.6l1.7 1.7M17.7 17.7l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.6 19.4l1.7-1.7M17.7 6.3l1.7-1.7"/></svg></button>
     <button class="add-fab" onclick="requireAuth(openPlaceForm)"><svg viewBox="0 0 24 24" width="16" height="16" fill="var(--gold)" style="vertical-align:-3px;margin-right:2px"><circle cx="12" cy="12" r="10"/><path d="M12 7v10M7 12h10" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg> Ideia</button>
   </div>
   <div id="placesList"></div>
@@ -872,7 +894,7 @@ input[type=checkbox]{ accent-color: var(--gold); }
       <button class="menu-row" onclick="closeOverlay('overlayMenu'); openOverlayHistorico();"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.3v5l3.3 1.9"/></svg></span><span class="mr-t">Histórico de dates</span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
       <button class="menu-row" onclick="closeOverlay('overlayMenu'); openOverlayGaleria();"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></span><span class="mr-t">Galeria de memórias</span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
       <button class="menu-row" onclick="closeOverlay('overlayMenu'); openOverlayRelacionamento();"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.3s-7.3-4.5-9.7-9C.7 7.8 2.1 4.5 5.3 3.5a5.5 5.5 0 0 1 6.7 2.4A5.5 5.5 0 0 1 18.7 3.5c3.2 1 4.6 4.3 3 7.8-2.4 4.5-9.7 9-9.7 9Z"/></svg></span><span class="mr-t">Nossa história</span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
-      <button class="menu-row" onclick="closeOverlay('overlayMenu'); requireAuth(openCategoriasManager);"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2.5v2.4M12 19.1v2.4M4.6 4.6l1.7 1.7M17.7 17.7l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.6 19.4l1.7-1.7M17.7 6.3l1.7-1.7"/></svg></span><span class="mr-t">Categorias e ícones<small style="display:block;font-weight:500;font-size:11.5px;color:var(--text-dim)">Cores e +23 ícones novos</small></span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
+      <button class="menu-row" onclick="closeOverlay('overlayMenu'); startCatEdit();"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2.5v2.4M12 19.1v2.4M4.6 4.6l1.7 1.7M17.7 17.7l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.6 19.4l1.7-1.7M17.7 6.3l1.7-1.7"/></svg></span><span class="mr-t">Categorias e ícones<small style="display:block;font-weight:500;font-size:11.5px;color:var(--text-dim)">Cores e ícones novos</small></span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
       <button class="menu-row" onclick="closeOverlay('overlayMenu'); openEspeciais();"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></span><span class="mr-t">Datas especiais<small style="display:block;font-weight:500;font-size:11.5px;color:var(--text-dim)">Mesversários, aniversários e lembretes</small></span><span class="pro-pill">PRO</span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
       <button class="menu-row" onclick="closeOverlay('overlayMenu'); openRetro();"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V11M10 20V4M16 20v-6M22 20H2"/></svg></span><span class="mr-t">Retrospectiva do casal<small style="display:block;font-weight:500;font-size:11.5px;color:var(--text-dim)">O resumo do ano de vocês</small></span><span class="pro-pill">PRO</span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
       <button class="menu-row" onclick="closeOverlay('overlayMenu'); openPacotes();"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m21 8-9-5-9 5v8l9 5 9-5V8Z"/><path d="m3 8 9 5 9-5M12 13v8"/></svg></span><span class="mr-t">Pacotes de dates<small style="display:block;font-weight:500;font-size:11.5px;color:var(--text-dim)">Coleções de ideias prontas</small></span><span class="pro-pill">PRO</span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
@@ -1203,11 +1225,11 @@ input[type=checkbox]{ accent-color: var(--gold); }
         <div class="plan-name">Grátis</div>
         <div class="plan-price">R$ 0</div>
         <ul>
-          <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>Até <b>30 ideias</b></li>
-          <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>7 categorias (muda nome e cor)</li>
-          <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>Calendário e <b>5 sorteios</b> por mês</li>
-          <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>Convite do parceiro(a)</li>
-          <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>Google Agenda e .ics</li>
+          <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span>Até <b>30 ideias</b></span></li>
+          <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span>9 categorias (muda nome e cor)</span></li>
+          <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span>Calendário e <b>5 sorteios</b> por mês</span></li>
+          <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span>Convite do parceiro(a)</span></li>
+          <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span>Google Agenda e .ics</span></li>
         </ul>
       </div>
       <div class="plan-card pro" id="planPro">
@@ -1217,22 +1239,7 @@ input[type=checkbox]{ accent-color: var(--gold); }
         <div class="plan-alt">ou R$ 119/ano (2 meses grátis)</div>
         <ul>
           <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span>Tudo do Grátis</span></li>
-          <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span><b>Ideias ilimitadas</b></span></li>
-          <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>Até <b>30 ideias</b></li>
-          <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>7 categorias (muda nome e cor)</li>
-          <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>Calendário e <b>5 sorteios</b> por mês</li>
-          <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>Convite do parceiro(a)</li>
-          <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>Google Agenda e .ics</li>
-        </ul>
-      </div>
-      <div class="plan-card pro" id="planPro">
-        <div class="plan-tag">Recomendado</div>
-        <div class="plan-name">Pro</div>
-        <div class="plan-price">R$ 14,90<small>/mês</small></div>
-        <div class="plan-alt">ou R$ 119/ano (2 meses grátis)</div>
-        <ul>
-          <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span>Tudo do Grátis</span></li>
-          <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span><b>Sorteios ilimitados</b></span></li>
+          <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span><b>Ideias e sorteios ilimitados</b></span></li>
           <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span><b>Retrospectiva do casal</b></span></li>
           <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span><b>Datas especiais</b> e lembretes</span></li>
           <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span><b>Pacotes de dates</b> prontos</span></li>
@@ -1248,6 +1255,16 @@ input[type=checkbox]{ accent-color: var(--gold); }
 </div>
 
 
+<!-- MODAL: editar uma categoria -->
+<div class="overlay" id="overlayCatEdit">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h2 id="catEditTitle">Cor da categoria</h2>
+    <div class="cat-swatches" id="catEditSw" style="padding:6px 0 14px"></div>
+    <div class="sheet-actions"><button class="btn btn-ghost" style="width:100%" onclick="closeOverlay('overlayCatEdit')">Pronto</button></div>
+  </div>
+</div>
+
 <!-- MODAL: Catálogo de categorias -->
 <div class="overlay" id="overlayCatalogo">
   <div class="sheet">
@@ -1255,7 +1272,7 @@ input[type=checkbox]{ accent-color: var(--gold); }
     <h2>Adicionar categoria</h2>
     <p class="gate-p" style="text-align:left">Escolha as que combinam com vocês. Dá para mudar a cor depois.</p>
     <div class="cat-pick" id="catPick"></div>
-    <div class="sheet-actions"><button class="btn btn-ghost" style="width:100%" onclick="closeOverlay('overlayCatalogo')">Pronto</button></div>
+    <div class="sheet-actions"><button class="btn btn-ghost" style="width:100%" onclick="doneCatalogo()">Pronto</button></div>
   </div>
 </div>
 
@@ -1370,16 +1387,26 @@ const ICON_SHARE = `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" 
 const DEFAULT_CATEGORIES = [
   {key:'restaurante', label:'Restaurante', hex:'#E5484D'},
   {key:'viagem', label:'Viagem', hex:'#0EA5A0'},
-  {key:'batevolta', label:'Bate e volta', hex:'#E8900C'},
-  {key:'casa', label:'Casa / Chill', hex:'#8B5CF6'},
+  {key:'batevolta', label:'Bate e volta', hex:'#5B5BEF'},
+  {key:'casa', label:'Casa', hex:'#8B5CF6'},
   {key:'cultura', label:'Evento cultural', hex:'#3B82F6'},
   {key:'aventura', label:'Aventura', hex:'#22A559'},
   {key:'experiencia', label:'Experiência', hex:'#EC4899'},
+  {key:'arlivre', label:'Ao ar livre', hex:'#F7B10C'},
+  {key:'criativo', label:'Criativo', hex:'#C026D3'},
 ];
 /* cores de fábrica antigas -> novas (só na exibição; o que está salvo só muda se a pessoa editar as categorias) */
-const OLD_TO_NEW_HEX = {'#e8735a':'#E5484D','#4fa8a0':'#0EA5A0','#d9a544':'#E8900C','#c97b94':'#8B5CF6','#8393e0':'#3B82F6','#7fb06b':'#22A559','#b97bc9':'#EC4899'};
+const OLD_TO_NEW_HEX = {'#e8735a':'#E5484D','#4fa8a0':'#0EA5A0','#d9a544':'#5B5BEF','#c97b94':'#8B5CF6','#8393e0':'#3B82F6','#7fb06b':'#22A559','#b97bc9':'#EC4899'};
 let categoriesTouched = false;
-const COLOR_POOL = ['#E5484D','#0EA5A0','#E8900C','#8B5CF6','#3B82F6','#22A559','#EC4899','#06B6D4','#D946EF','#84CC16'];
+/* paleta fechada: só estas cores (vivas, sem preto/cinza) podem ser escolhidas */
+const PALETA = ['#E5484D','#F2711C','#F7B10C','#7CB91A','#22A559','#0EA5A0','#0EA5E9','#3B82F6','#5B5BEF','#8B5CF6','#C026D3','#EC4899'];
+const COLOR_POOL = PALETA;
+function nearestPaleta(hex){
+  const v = h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
+  const a = v(hex); let best = PALETA[0], bd = 1e9;
+  PALETA.forEach(c=>{ const b=v(c); const d=(a[0]-b[0])**2+(a[1]-b[1])**2+(a[2]-b[2])**2; if(d<bd){ bd=d; best=c; } });
+  return best;
+}
 function catInfo(key){
   return (state.categories||DEFAULT_CATEGORIES).find(c=>c.key===key) || {key:'', label:'Categoria', hex:'#D8A94E'};
 }
@@ -1433,7 +1460,7 @@ function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(
 function blankState(){ return { places: [], events: [], categories: DEFAULT_CATEGORIES.map(c=>({...c})), startDate: null, firstDate: null, weddingDate: null, status: null, firstUnknown: false, couple: null }; }
 function stateFromDoc(data){
   if(!data) return blankState();
-  return { places: data.places || [], events: data.events || [], categories: ((data.categories && data.categories.length) ? data.categories : DEFAULT_CATEGORIES).map(c=>({...c, hex: OLD_TO_NEW_HEX[String(c.hex||'').toLowerCase()] || c.hex})), startDate: data.startDate || null, firstDate: data.firstDate || null, weddingDate: data.weddingDate || null, status: data.status || null, firstUnknown: !!data.firstUnknown, couple: data.couple || null, sorteios: data.sorteios || {} };
+  return { places: data.places || [], events: data.events || [], categories: ((data.categories && data.categories.length) ? data.categories : DEFAULT_CATEGORIES).map(c=>({...c, label: (c.key==='casa' && c.label==='Casa / Chill') ? 'Casa' : c.label, hex: OLD_TO_NEW_HEX[String(c.hex||'').toLowerCase()] || c.hex})), startDate: data.startDate || null, firstDate: data.firstDate || null, weddingDate: data.weddingDate || null, status: data.status || null, firstUnknown: !!data.firstUnknown, couple: data.couple || null, sorteios: data.sorteios || {} };
 }
 function startCouple(id){
   coupleRef = (id==='legacy') ? 'casal/state' : 'couples/'+id;
@@ -1465,6 +1492,7 @@ async function saveState(){
 }
 
 function setScreen(name){
+  if(catEditMode && name!=='inicio') finishCatEdit();
   document.querySelectorAll('.nav-btn').forEach(t=>t.classList.toggle('active', t.dataset.screen===name));
   ['inicio','ideias','agenda','favoritos'].forEach(n=>{
     document.getElementById('screen-'+n).style.display = (n===name)?'block':'none';
@@ -1796,20 +1824,111 @@ function renderFavoritos(){
   }
   container.innerHTML = list.map(placeCardHtml).join('');
 }
+let catEditMode = false, catEditSnapshot = '', catEditIdx = -1;
 function renderCategoriasGrid(){
   const container = document.getElementById('categoriasGrid');
   if(!container) return;
-  container.innerHTML = state.categories.map(c=>{
-    const hx = (c.hex||'#888888').replace('#','');
-    const L = (0.299*parseInt(hx.slice(0,2),16)+0.587*parseInt(hx.slice(2,4),16)+0.114*parseInt(hx.slice(4,6),16))/255;
+  const list = catEditMode ? categoriasEdit : state.categories;
+  const X = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+  let html = list.map((c,i)=>{
     const bg = `linear-gradient(160deg, color-mix(in srgb, ${c.hex} 92%, white), ${c.hex})`;
     const sh = `color-mix(in srgb, ${c.hex} 38%, transparent)`;
-    return `<button class="categoria-tile" style="background:${bg};--tile-shadow:${sh}" onclick="goToIdeiasCategoria('${c.key}')">
-      <span class="ic">${catIcon(c.key)}</span>
-      <span class="lbl">${escapeHtml(c.label)}</span>
-    </button>`;
+    const inner = `<span class="ic">${catIcon(c.key)}</span><span class="lbl">${escapeHtml(c.label)}</span>`;
+    if(!catEditMode) return `<button class="categoria-tile" style="background:${bg};--tile-shadow:${sh}" onclick="catTileClick('${c.key}')">${inner}</button>`;
+    return `<div class="categoria-tile wiggle" data-i="${i}" style="background:${bg};--tile-shadow:${sh}"><button type="button" class="cat-x" data-x="${i}" aria-label="Excluir">${X}</button>${inner}</div>`;
   }).join('');
+  if(catEditMode && planInfo().pro && list.length < PRO_MAX_CATEGORIES){
+    html += `<button type="button" class="categoria-tile cat-new" onclick="addCategoria()"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="fill-opacity:1"><path d="M12 5v14M5 12h14"/></svg></span><span class="lbl">Nova categoria</span></button>`;
+  }
+  container.innerHTML = html;
+  const btn = document.getElementById('catEditBtn'); if(btn) btn.textContent = catEditMode ? 'OK' : 'Editar';
+  const hint = document.getElementById('catEditHint'); if(hint) hint.style.display = catEditMode ? 'block' : 'none';
 }
+let catLpSuppress = false;
+function catTileClick(key){ if(catLpSuppress){ catLpSuppress=false; return; } goToIdeiasCategoria(key); }
+function startCatEdit(){
+  if(catEditMode) return;
+  setScreen('inicio');
+  categoriasEdit = state.categories.map(c=>({...c}));
+  catEditSnapshot = JSON.stringify(categoriasEdit);
+  catEditMode = true;
+  renderCategoriasGrid();
+  const g = document.getElementById('categoriasGrid'); if(g) g.scrollIntoView({behavior:'smooth', block:'center'});
+}
+function toggleCatEdit(){ catEditMode ? finishCatEdit() : startCatEdit(); }
+function finishCatEdit(){
+  if(!catEditMode) return;
+  catEditMode = false;
+  categoriasEdit.forEach(c=>{ if(!c.label.trim()) c.label = 'Categoria'; });
+  if(JSON.stringify(categoriasEdit) !== catEditSnapshot) saveCategorias(); else renderCategoriasGrid();
+}
+function delCatTile(i){
+  if(categoriasEdit.length <= 1){ alert('Precisa ficar pelo menos uma categoria.'); return; }
+  const cat = categoriasEdit[i];
+  const emUso = state.places.some(p=>p.category===cat.key);
+  if(emUso && !confirm('Algumas ideias usam essa categoria. Elas continuam existindo, mas ficam sem cor/categoria definida. Excluir mesmo assim?')) return;
+  categoriasEdit.splice(i,1);
+  renderCategoriasGrid();
+}
+function openCatEdit(i){
+  catEditIdx = i;
+  const c = categoriasEdit[i]; if(!c) return;
+  document.getElementById('catEditTitle').textContent = c.label;
+  renderCatEditSw();
+  openOverlayEl('overlayCatEdit');
+}
+function renderCatEditSw(){
+  const c = categoriasEdit[catEditIdx]; if(!c) return;
+  document.getElementById('catEditSw').innerHTML = PALETA.map(h=>`<button type="button" class="cat-sw${h.toLowerCase()===(c.hex||'').toLowerCase()?' on':''}" style="background:${catBadgeBg(h)}" aria-label="${h}" onclick="catEditCor('${h}')"></button>`).join('');
+}
+function catEditCor(h){ if(categoriasEdit[catEditIdx]){ categoriasEdit[catEditIdx].hex = h; renderCatEditSw(); renderCategoriasGrid(); } }
+/* arrastar para reordenar (modo editar) */
+(function(){
+  const grid = document.getElementById('categoriasGrid'); if(!grid) return;
+  let d = null;
+  const tileAt = (x,y,except)=>[...grid.querySelectorAll('.categoria-tile[data-i]')].find(t=>{ if(t===except) return false; const r=t.getBoundingClientRect(); return x>=r.left && x<=r.right && y>=r.top && y<=r.bottom; });
+  /* segurar um quadradinho entra no modo editar (como no iPhone) */
+  let lp = null;
+  const lpClear = ()=>{ if(lp){ clearTimeout(lp.t); lp = null; } };
+  grid.addEventListener('pointerdown', e=>{
+    if(catEditMode) return;
+    const t = e.target.closest('.categoria-tile'); if(!t) return;
+    const x0 = e.clientX, y0 = e.clientY;
+    lp = { x0, y0, t:setTimeout(()=>{ lp = null; catLpSuppress = true; setTimeout(()=>{ catLpSuppress=false; }, 700); startCatEdit(); if(navigator.vibrate) try{ navigator.vibrate(15); }catch(_){} }, 550) };
+  });
+  grid.addEventListener('pointermove', e=>{ if(lp && Math.hypot(e.clientX-lp.x0, e.clientY-lp.y0) > 10) lpClear(); });
+  ['pointerup','pointercancel','pointerleave'].forEach(n=>grid.addEventListener(n, lpClear));
+  grid.addEventListener('contextmenu', e=>{ if(e.target.closest('.categoria-tile')) e.preventDefault(); });
+  grid.addEventListener('click', e=>{ const x = e.target.closest('[data-x]'); if(x && catEditMode){ e.stopPropagation(); delCatTile(+x.dataset.x); } });
+  grid.addEventListener('pointerdown', e=>{
+    if(!catEditMode || e.target.closest('[data-x]')) return;
+    const t = e.target.closest('.categoria-tile[data-i]'); if(!t) return;
+    d = { t, i:+t.dataset.i, x0:e.clientX, y0:e.clientY, moved:false, id:e.pointerId };
+    try{ t.setPointerCapture(e.pointerId); }catch(_){}
+  });
+  grid.addEventListener('pointermove', e=>{
+    if(!d || e.pointerId!==d.id) return;
+    const dx = e.clientX-d.x0, dy = e.clientY-d.y0;
+    if(!d.moved && Math.hypot(dx,dy) < 8) return;
+    if(!d.moved){ d.moved = true; d.t.classList.add('dragging'); }
+    d.t.style.transform = `translate(${dx}px,${dy}px) scale(1.06)`;
+    grid.querySelectorAll('.drop').forEach(n=>n.classList.remove('drop'));
+    const tg = tileAt(e.clientX, e.clientY, d.t); if(tg) tg.classList.add('drop');
+    if(e.cancelable) e.preventDefault();
+  });
+  const end = (e, cancel)=>{
+    if(!d || e.pointerId!==d.id) return;
+    const cur = d; d = null;
+    if(cancel){ cur.t.classList.remove('dragging'); cur.t.style.transform=''; grid.querySelectorAll('.drop').forEach(n=>n.classList.remove('drop')); return; }
+    if(!cur.moved){ openCatEdit(cur.i); return; }
+    const tg = tileAt(e.clientX, e.clientY, cur.t);
+    if(tg){ const to = +tg.dataset.i; const it = categoriasEdit.splice(cur.i,1)[0]; categoriasEdit.splice(to,0,it); }
+    renderCategoriasGrid();
+  };
+  grid.addEventListener('pointerup', e=>end(e,false));
+  grid.addEventListener('pointercancel', e=>end(e,true));
+})();
+function doneCatalogo(){ closeOverlay('overlayCatalogo'); if(catEditMode) renderCategoriasGrid(); }
 function goToIdeiasCategoria(key){
   setScreen('ideias');
   document.getElementById('filterCategoria').value = key;
@@ -2482,21 +2601,23 @@ function revelarSurpresa(){
 /* ---------- GERENCIAR CATEGORIAS ---------- */
 let categoriasEdit = [];
 function openCategoriasManager(){
+  catPickOpen = -1;
   categoriasEdit = state.categories.map(c=>({...c}));
   renderCategoriasList();
   openOverlayEl('overlayCategorias');
 }
 function catBadgeBg(hex){ return `linear-gradient(160deg, color-mix(in srgb, ${hex} 90%, white), ${hex})`; }
+let catPickOpen = -1;
 function renderCategoriasList(){
-  document.getElementById('categoriasList').innerHTML = `<div class="cat-hint">Toque no ícone para trocar a cor.</div>` + categoriasEdit.map((c,i)=>`
+  document.getElementById('categoriasList').innerHTML = `<div class="cat-hint">Toque no ícone para escolher a cor.</div>` + categoriasEdit.map((c,i)=>`
     <div class="cat-row">
-      <label class="cat-badge" id="catDot${i}" style="background:${catBadgeBg(c.hex)}" title="Trocar cor">
+      <button type="button" class="cat-badge" id="catDot${i}" style="background:${catBadgeBg(c.hex)}" title="Trocar cor" onclick="catPickOpen = (catPickOpen===${i} ? -1 : ${i}); renderCategoriasList()">
         ${catIcon(c.key,24)}
-        <input type="color" value="${c.hex}" oninput="categoriasEdit[${i}].hex=this.value; document.getElementById('catDot${i}').style.background=catBadgeBg(this.value)">
-      </label>
+      </button>
       <input type="text" class="cat-name" value="${escapeHtml(c.label)}" oninput="categoriasEdit[${i}].label=this.value">
       <button class="cat-del" onclick="removeCategoriaEdit(${i})" aria-label="Excluir categoria"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
     </div>
+    ${catPickOpen===i ? `<div class="cat-swatches">${PALETA.map(h=>`<button type="button" class="cat-sw${h.toLowerCase()===(c.hex||'').toLowerCase()?' on':''}" style="background:${catBadgeBg(h)}" aria-label="${h}" onclick="categoriasEdit[${i}].hex='${h}'; catPickOpen=-1; renderCategoriasList()"></button>`).join('')}</div>` : ''}
   `).join('');
 }
 function addCategoria(){
@@ -2840,7 +2961,7 @@ function gcalUrl(id){
 }
 
 /* ---------- PLANO (grátis / pro) ---------- */
-const FREE_LIMITS = { places: 30, categories: 7, sorteios: 5 };   // sorteios por mês
+const FREE_LIMITS = { places: 30, categories: 9, sorteios: 5 };   // sorteios por mês
 const PRO_MAX_CATEGORIES = 30;
 const CHECKOUT_ENABLED = false;   // ligar quando o pagamento (Stripe) estiver configurado
 function planInfo(){
@@ -2854,7 +2975,7 @@ function canAddCategory(){ return planInfo().pro ? state.categories.length < PRO
 const PAYWALL_MSG = {
   sorteios: `Vocês usaram os ${FREE_LIMITS.sorteios} sorteios grátis deste mês. Com o Pro o sorteio é ilimitado.`,
   ideias: `Vocês chegaram nas ${FREE_LIMITS.places} ideias do plano grátis. Com o Pro dá para guardar quantas quiserem.`,
-  categorias: 'Criar categorias novas é do plano Pro. No grátis dá para mudar o nome e a cor das 7 categorias.',
+  categorias: 'Criar categorias novas é do plano Pro. No grátis dá para mudar o nome e a cor das 9 categorias.',
   galeria: 'A galeria de memórias é do plano Pro.',
 };
 function openPlano(reason){
@@ -2905,7 +3026,7 @@ const CATALOGO = [
   {key:'festa', label:'Festa', hex:'#EC4899'}, {key:'esporte', label:'Esporte', hex:'#22A559'},
   {key:'livraria', label:'Livraria', hex:'#0EA5E9'}, {key:'fotos', label:'Fotos', hex:'#64748B'},
   {key:'bar', label:'Bar', hex:'#EF5B3F'}, {key:'sorvete', label:'Sorvete', hex:'#EC4899'},
-  {key:'parque', label:'Parque', hex:'#22A559'}, {key:'museu', label:'Museu', hex:'#5B6CF0'},
+  {key:'noite', label:'Noite', hex:'#C026D3'}, {key:'museu', label:'Museu', hex:'#5B6CF0'},
   {key:'cozinhar', label:'Cozinhar', hex:'#E8A10C'}, {key:'serie', label:'Série em casa', hex:'#3B82F6'},
   {key:'bike', label:'Bike', hex:'#0EA5A0'}, {key:'camping', label:'Camping', hex:'#22A559'},
   {key:'vinho', label:'Vinho', hex:'#B91C5C'}, {key:'karaoke', label:'Karaokê', hex:'#A855F7'},
@@ -2926,6 +3047,9 @@ Object.assign(CAT_ICON_INNER, {
   fotos: `<path d="M4 8h3l1.5-2h7L17 8h3v11H4V8Z"/><circle cx="12" cy="13" r="3.2"/>`,
   bar: `<path d="M4 4h16l-8 9-8-9Z"/><path d="M12 13v7M8 20h8"/>`,
   sorvete: `<path d="M8 11a4 4 0 1 1 8 0"/><path d="M7 11h10l-5 10-5-10Z"/>`,
+  criativo: `<path d="M5.8 11.3 2 22l10.7-3.79"/><path d="M4 3h.01M22 8h.01M15 2h.01M22 20h.01"/><path d="m22 2-2.24.75a2.9 2.9 0 0 0-1.96 3.12c.1.86-.57 1.63-1.45 1.63h-.38c-.86 0-1.6.6-1.76 1.44L14 10"/><path d="m22 13-.82-.33c-.86-.34-1.82.2-1.98 1.11-.11.7-.72 1.22-1.43 1.22H17"/><path d="m11 2 .33.82c.34.86-.2 1.82-1.11 1.98C9.52 4.9 9 5.52 9 6.23V7"/><path d="M11 13c1.93 1.93 2.83 4.17 2 5-.83.83-3.07-.07-5-2-1.93-1.93-2.83-4.17-2-5 .83-.83 3.07.07 5 2Z"/>`,
+  noite: `<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/>`,
+  arlivre: `<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>`,
   parque: `<path d="M12 21v-6"/><path d="M12 15c-4 0-6-2.5-6-5.5a6 6 0 0 1 12 0c0 3-2 5.5-6 5.5Z"/>`,
   museu: `<path d="M3 9 12 4l9 5H3Z"/><path d="M5 9v9M9.5 9v9M14.5 9v9M19 9v9M3 20h18"/>`,
   cozinhar: `<path d="M7 14a4 4 0 0 1-1-7.8A4 4 0 0 1 12 4a4 4 0 0 1 6 2.2A4 4 0 0 1 17 14v5H7v-5Z"/><path d="M7 16.5h10"/>`,
@@ -2941,6 +3065,7 @@ function addCategoria(){
   if(categoriasEdit.length >= PRO_MAX_CATEGORIES){ alert('Máximo de '+PRO_MAX_CATEGORIES+' categorias.'); return; }
   renderCatalogo(); openOverlayEl('overlayCatalogo');
 }
+CATALOGO.forEach(c=>{ c.hex = nearestPaleta(c.hex); });
 function renderCatalogo(){
   const have = new Set(categoriasEdit.map(c=>c.key));
   $g('catPick').innerHTML = CATALOGO.map(c=>{
@@ -2952,7 +3077,8 @@ function pickCategoria(key){
   const c = CATALOGO.find(x=>x.key===key); if(!c) return;
   if(categoriasEdit.some(x=>x.key===key)) return;
   categoriasEdit.push({key:c.key, label:c.label, hex:c.hex});
-  renderCategoriasList(); renderCatalogo();
+  if(catEditMode) renderCategoriasGrid(); else renderCategoriasList();
+  renderCatalogo();
 }
 
 /* ---------- PRO: datas especiais ---------- */
