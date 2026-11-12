@@ -733,6 +733,10 @@ input[type=checkbox]{ accent-color: var(--gold); }
 .juntos-card .jc-foot{ display:flex; align-items:center; gap:8px; margin-top:13px; padding:10px 12px; border-radius:14px; background:color-mix(in srgb, var(--gold) 9%, var(--surface)); font-size:13px; font-weight:700; }
 .juntos-card .jc-fic{ display:flex; color:var(--gold); flex:none; }
 .juntos-card .jc-ft{ flex:1; min-width:0; }
+
+/* botão X nas folhas */
+.sheet-x{ float:right; position:sticky; top:0; z-index:5; width:36px; height:36px; margin:-6px -6px 0 10px; border-radius:50%; border:0; display:flex; align-items:center; justify-content:center; background:color-mix(in srgb, var(--text) 9%, var(--bg-soft)); color:var(--text); cursor:pointer; }
+.sheet-x:active{ transform:scale(.94); }
 </style>
 </head>
 <body>
@@ -1488,13 +1492,55 @@ function openOverlayGaleria(){ renderGaleria(); openOverlayEl('overlayGaleria');
 function openOverlayClima(){ if(!climaLoadedOnce){ climaLoadedOnce = true; buscarClima(); } openOverlayEl('overlayClima'); }
 
 /* toque fora da folha fecha as telas de leitura (formulários não, para não perder o que foi digitado) */
-const OUTSIDE_CLOSE = ['overlayClima','overlayHistorico','overlayGaleria','overlayMenu','overlayPlano','overlayCatalogo','overlayEspeciais','overlayRetro','overlayPacotes','overlayCal'];
+const OUTSIDE_CLOSE = ['overlayClima','overlayHistorico','overlayGaleria','overlayMenu','overlayPlano','overlayCatalogo','overlayEspeciais','overlayRetro','overlayPacotes','overlayCal','overlayDetail','overlaySorteio','overlayConvite'];
 document.addEventListener('click', e=>{
   const t = e.target;
   if(t && t.classList && t.classList.contains('overlay') && t.classList.contains('open') && OUTSIDE_CLOSE.includes(t.id)) t.classList.remove('open');
 });
 function closeOverlay(id){ document.getElementById(id).classList.remove('open'); }
 function openOverlayEl(id){ document.getElementById(id).classList.add('open'); }
+
+/* ---------- fechar telas com facilidade: botão X, arrastar pra baixo e logo = início ---------- */
+(function(){
+  const X = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+  document.querySelectorAll('.overlay').forEach(ov=>{
+    if(ov.id==='overlaySenha' || ov.id==='overlayDetail') return;
+    const sh = ov.querySelector('.sheet'); if(!sh || sh.querySelector('.sheet-x')) return;
+    const b = document.createElement('button');
+    b.type='button'; b.className='sheet-x'; b.setAttribute('aria-label','Fechar'); b.innerHTML = X;
+    b.onclick = ()=>closeOverlay(ov.id);
+    sh.insertBefore(b, sh.firstChild);
+  });
+  let drag = null;
+  document.addEventListener('touchstart', e=>{
+    const sh = e.target.closest && e.target.closest('.overlay.open .sheet'); if(!sh || e.target.closest('.sheet-x')){ drag=null; return; }
+    const ov = sh.closest('.overlay'); if(ov.id==='overlaySenha'){ drag=null; return; }
+    const y = e.touches[0].clientY, top = sh.getBoundingClientRect().top;
+    if(y - top > 64 || sh.scrollTop > 0){ drag=null; return; }
+    drag = { sh, ov, y0:y, dy:0 };
+  }, {passive:true});
+  document.addEventListener('touchmove', e=>{
+    if(!drag) return;
+    const dy = Math.max(0, e.touches[0].clientY - drag.y0); drag.dy = dy;
+    drag.sh.style.transition='none'; drag.sh.style.transform = 'translateY('+dy+'px)';
+    if(dy>4 && e.cancelable) e.preventDefault();
+  }, {passive:false});
+  function endDrag(){
+    if(!drag) return; const {sh, ov, dy} = drag; drag=null;
+    sh.style.transition='transform .2s ease';
+    if(dy > 90){ ov.classList.remove('open'); setTimeout(()=>{ sh.style.transition=''; sh.style.transform=''; }, 260); }
+    else { sh.style.transform=''; setTimeout(()=>{ sh.style.transition=''; }, 240); }
+  }
+  document.addEventListener('touchend', endDrag); document.addEventListener('touchcancel', endDrag);
+  const brand = document.querySelector('.app-header .brand');
+  if(brand){
+    brand.style.cursor='pointer';
+    brand.addEventListener('click', ()=>{
+      document.querySelectorAll('.overlay.open').forEach(o=>{ if(o.id!=='overlaySenha') o.classList.remove('open'); });
+      setScreen('inicio');
+    });
+  }
+})();
 
 /* ---------- WEEK STRIP (home) ---------- */
 function renderWeekStrip(){
