@@ -648,6 +648,7 @@ input[type=checkbox]{ accent-color: var(--gold); }
 .g-seg button{ flex:1; padding:10px; border-radius:11px; font-size:14px; font-weight:700; color:var(--text-dim); background:none; border:0; }
 .g-seg button.on{ background:var(--gold); color:#FFF7F2; }
 .g-err{ min-height:18px; font-size:13px; color:#D9453A; margin:4px 0 2px; font-weight:600; }
+.cat-new-wide{ grid-column:1/-1; margin-top:2px; padding:13px; border-radius:16px; border:2px dashed color-mix(in srgb, var(--gold) 45%, transparent); background:transparent; color:var(--gold); font-weight:800; font-size:14.5px; font-family:inherit; }
 .g-link{ display:block; width:100%; margin-top:14px; padding:8px; background:none; border:0; color:var(--gold); font-weight:700; font-size:14px; }
 .g-card{ display:block; width:100%; text-align:left; background:var(--surface); border-radius:18px; padding:16px; margin-bottom:12px; box-shadow:var(--shadow-card); border:1px solid var(--border); color:var(--text); }
 .g-card b{ display:block; font-size:16px; margin-bottom:3px; }
@@ -928,6 +929,8 @@ input[type=checkbox]{ accent-color: var(--gold); }
       <button class="menu-row" onclick="closeOverlay('overlayMenu'); openPacotes();"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m21 8-9-5-9 5v8l9 5 9-5V8Z"/><path d="m3 8 9 5 9-5M12 13v8"/></svg></span><span class="mr-t">Pacotes de dates<small style="display:block;font-weight:500;font-size:11.5px;color:var(--text-dim)">Coleções de ideias prontas</small></span><span class="pro-pill">PRO</span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
       <button class="menu-row" onclick="closeOverlay('overlayMenu'); openPlano();"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.3 6.8 19.1l1-5.8-4.3-4.1 5.9-.9z"/></svg></span><span class="mr-t">Meu plano<small id="menuPlanTxt" style="display:block;font-weight:500;font-size:11.5px;color:var(--text-dim)"></small></span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
       <button class="menu-row" id="menuConviteRow" style="display:none" onclick="closeOverlay('overlayMenu'); openConvite();"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg></span><span class="mr-t" id="menuConviteTxt">Convidar parceiro(a)</span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
+      <button class="menu-row" onclick="window.open('/privacidade.html','_blank')"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg></span><span class="mr-t">Privacidade</span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
+      <button class="menu-row" onclick="window.open('/termos.html','_blank')"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg></span><span class="mr-t">Termos de uso</span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
       <button class="menu-row" onclick="closeOverlay('overlayMenu'); gateSignOut();"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg></span><span class="mr-t">Sair da conta<small id="menuAcc" style="display:block;font-weight:500;font-size:11.5px;color:var(--text-dim)"></small></span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
 
     </div>
@@ -1186,6 +1189,7 @@ input[type=checkbox]{ accent-color: var(--gold); }
       <div class="g-err" id="gErr"></div>
       <button class="g-btn primary" id="gSubmit" onclick="gateSubmit()">Entrar</button>
       <button class="g-link" id="gForgot" onclick="gateReset()">Esqueci minha senha</button>
+      <div style="margin-top:12px;font-size:12px;line-height:1.5;color:var(--text-dim);text-align:center">Ao continuar, você concorda com os <a href="/termos.html" target="_blank" style="color:var(--gold);font-weight:700">Termos de Uso</a> e a <a href="/privacidade.html" target="_blank" style="color:var(--gold);font-weight:700">Política de Privacidade</a>.</div>
     </div>
 
     <div class="gp" data-p="choose">
@@ -1488,7 +1492,11 @@ function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(
 function blankState(){ return { places: [], events: [], categories: DEFAULT_CATEGORIES.map(c=>({...c})), startDate: null, firstDate: null, weddingDate: null, status: null, firstUnknown: false, couple: null }; }
 function stateFromDoc(data){
   if(!data) return blankState();
-  return { places: data.places || [], events: data.events || [], categories: ((data.categories && data.categories.length) ? data.categories : DEFAULT_CATEGORIES).map(c=>({...c, label: (c.key==='casa' && c.label==='Casa / Chill') ? 'Casa' : c.label, hex: OLD_TO_NEW_HEX[String(c.hex||'').toLowerCase()] || c.hex})), startDate: data.startDate || null, firstDate: data.firstDate || null, weddingDate: data.weddingDate || null, status: data.status || null, firstUnknown: !!data.firstUnknown, couple: data.couple || null, sorteios: data.sorteios || {} };
+  const _OLD7 = ['restaurante','viagem','batevolta','casa','cultura','aventura','experiencia'];
+  let _cats = (data.categories && data.categories.length) ? data.categories : DEFAULT_CATEGORIES;
+  /* conta antiga com as 7 categorias de fábrica: mostra também as 2 novas (só na exibição; só é salvo se a pessoa editar) */
+  if(_cats.length===7 && _OLD7.every(k=>_cats.some(c=>c.key===k))) _cats = _cats.concat(DEFAULT_CATEGORIES.filter(c=>c.key==='arlivre'||c.key==='criativo'));
+  return { places: data.places || [], events: data.events || [], categories: _cats.map(c=>({...c, label: (c.key==='casa' && c.label==='Casa / Chill') ? 'Casa' : c.label, hex: OLD_TO_NEW_HEX[String(c.hex||'').toLowerCase()] || c.hex})), startDate: data.startDate || null, firstDate: data.firstDate || null, weddingDate: data.weddingDate || null, status: data.status || null, firstUnknown: !!data.firstUnknown, couple: data.couple || null, sorteios: data.sorteios || {} };
 }
 function startCouple(id){
   coupleRef = (id==='legacy') ? 'casal/state' : 'couples/'+id;
@@ -1905,7 +1913,8 @@ function renderCategoriasGrid(){
     return `<div class="categoria-tile wiggle" data-i="${i}" style="background:${bg};--tile-shadow:${sh}"><button type="button" class="cat-x" data-x="${i}" aria-label="Excluir">${X}</button>${inner}</div>`;
   }).join('');
   if(catEditMode && planInfo().pro && list.length < PRO_MAX_CATEGORIES){
-    html += `<button type="button" class="categoria-tile cat-new" onclick="addCategoria()"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="fill-opacity:1"><path d="M12 5v14M5 12h14"/></svg></span><span class="lbl">Nova categoria</span></button>`;
+    if(list.length>=9) html += `<button type="button" class="cat-new-wide" onclick="addCategoria()">+ Adicionar categoria</button>`;
+    else html += `<button type="button" class="categoria-tile cat-new" onclick="addCategoria()"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="fill-opacity:1"><path d="M12 5v14M5 12h14"/></svg></span><span class="lbl">Nova categoria</span></button>`;
   }
   container.innerHTML = html;
   const btn = document.getElementById('catEditBtn'); if(btn) btn.textContent = catEditMode ? 'OK' : 'Editar';
