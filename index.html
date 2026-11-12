@@ -700,6 +700,18 @@ input[type=checkbox]{ accent-color: var(--gold); }
 .pack-t{ font-size:15.5px; font-weight:800; } .pack-d{ font-size:12px; color:var(--text-dim); }
 .pack-ex{ font-size:12.5px; color:var(--text-dim); margin:10px 0 12px; line-height:1.4; }
 .pack .btn{ width:100%; flex:none; } .pack .btn:disabled{ opacity:.6; }
+
+/* calendário do mês: estilo agenda do Google (faixas com o nome, linhas finas) */
+.cal-grid{ gap:0; border-top:1px solid var(--border); border-left:1px solid var(--border); }
+.cal-grid-month .cal-cell{ min-height:84px; align-items:stretch; justify-content:flex-start; gap:3px; padding:5px 0 4px; text-align:center;
+  border:0; border-right:1px solid var(--border); border-bottom:1px solid var(--border); border-radius:0; box-shadow:none; background:transparent; }
+.cal-cell .daynum{ align-self:center; font-size:13px; font-weight:600; color:var(--text); }
+.cal-cell.today .daynum{ width:24px; height:24px; font-size:12.5px; }
+.cal-cell .bar{ display:block; margin:0 2px; padding:2px 4px; border-radius:4px; font-size:10.5px; line-height:1.25; font-weight:600; color:#FFFBEF;
+  text-align:left; white-space:nowrap; overflow:hidden; text-overflow:clip; min-width:0; }
+.cal-cell .more{ font-size:10px; font-weight:700; color:var(--text-dim); padding-left:5px; text-align:left; }
+.cal-cell.selected{ background:color-mix(in srgb, var(--gold) 10%, transparent); box-shadow:inset 0 0 0 2px var(--gold); }
+.cal-cell.other-month{ opacity:.4; }
 </style>
 </head>
 <body>
@@ -1330,15 +1342,18 @@ input[type=checkbox]{ accent-color: var(--gold); }
 <script>
 const ICON_SHARE = `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="vertical-align:-2px"><circle cx="6" cy="12" r="2.4" fill="var(--gold)" stroke="none"/><circle cx="18" cy="5.5" r="2.4" fill="var(--gold)" stroke="none"/><circle cx="18" cy="18.5" r="2.4" fill="var(--gold)" stroke="none"/><path d="M8.2 10.8 15.8 6.7M8.2 13.2l7.6 4.1"/></svg>`;
 const DEFAULT_CATEGORIES = [
-  {key:'restaurante', label:'Restaurante', hex:'#E8735A'},
-  {key:'viagem', label:'Viagem', hex:'#4FA8A0'},
-  {key:'batevolta', label:'Bate e volta', hex:'#D9A544'},
-  {key:'casa', label:'Casa / Chill', hex:'#C97B94'},
-  {key:'cultura', label:'Evento cultural', hex:'#8393E0'},
-  {key:'aventura', label:'Aventura', hex:'#7FB06B'},
-  {key:'experiencia', label:'Experiência', hex:'#B97BC9'},
+  {key:'restaurante', label:'Restaurante', hex:'#E5484D'},
+  {key:'viagem', label:'Viagem', hex:'#0EA5A0'},
+  {key:'batevolta', label:'Bate e volta', hex:'#E8900C'},
+  {key:'casa', label:'Casa / Chill', hex:'#8B5CF6'},
+  {key:'cultura', label:'Evento cultural', hex:'#3B82F6'},
+  {key:'aventura', label:'Aventura', hex:'#22A559'},
+  {key:'experiencia', label:'Experiência', hex:'#EC4899'},
 ];
-const COLOR_POOL = ['#E8735A','#4FA8A0','#D9A544','#C97B94','#8393E0','#7FB06B','#B97BC9','#5FB3D9','#D97BB0','#8BC98A'];
+/* cores de fábrica antigas -> novas (só na exibição; o que está salvo só muda se a pessoa editar as categorias) */
+const OLD_TO_NEW_HEX = {'#e8735a':'#E5484D','#4fa8a0':'#0EA5A0','#d9a544':'#E8900C','#c97b94':'#8B5CF6','#8393e0':'#3B82F6','#7fb06b':'#22A559','#b97bc9':'#EC4899'};
+let categoriesTouched = false;
+const COLOR_POOL = ['#E5484D','#0EA5A0','#E8900C','#8B5CF6','#3B82F6','#22A559','#EC4899','#06B6D4','#D946EF','#84CC16'];
 function catInfo(key){
   return (state.categories||DEFAULT_CATEGORIES).find(c=>c.key===key) || {key:'', label:'Categoria', hex:'#D8A94E'};
 }
@@ -1392,7 +1407,7 @@ function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(
 function blankState(){ return { places: [], events: [], categories: DEFAULT_CATEGORIES.map(c=>({...c})), startDate: null, firstDate: null, weddingDate: null, status: null, firstUnknown: false, couple: null }; }
 function stateFromDoc(data){
   if(!data) return blankState();
-  return { places: data.places || [], events: data.events || [], categories: (data.categories && data.categories.length) ? data.categories : DEFAULT_CATEGORIES.map(c=>({...c})), startDate: data.startDate || null, firstDate: data.firstDate || null, weddingDate: data.weddingDate || null, status: data.status || null, firstUnknown: !!data.firstUnknown, couple: data.couple || null, sorteios: data.sorteios || {} };
+  return { places: data.places || [], events: data.events || [], categories: ((data.categories && data.categories.length) ? data.categories : DEFAULT_CATEGORIES).map(c=>({...c, hex: OLD_TO_NEW_HEX[String(c.hex||'').toLowerCase()] || c.hex})), startDate: data.startDate || null, firstDate: data.firstDate || null, weddingDate: data.weddingDate || null, status: data.status || null, firstUnknown: !!data.firstUnknown, couple: data.couple || null, sorteios: data.sorteios || {} };
 }
 function startCouple(id){
   coupleRef = (id==='legacy') ? 'casal/state' : 'couples/'+id;
@@ -1412,6 +1427,8 @@ function startCouple(id){
 async function saveState(){
   try{
     const payload = JSON.parse(JSON.stringify(state));
+    // as categorias só são regravadas quando a pessoa edita (assim as cores salvas antes nunca são alteradas sozinhas)
+    if(!categoriesTouched) delete payload.categories;
     if(coupleRef === 'casal/state'){
       // casal original: nunca grava campos novos vazios
       ['weddingDate','status','couple','firstUnknown'].forEach(k=>{ if(payload[k]==null || payload[k]===false) delete payload[k]; });
@@ -1692,7 +1709,7 @@ function renderCategoriasGrid(){
   container.innerHTML = state.categories.map(c=>{
     const hx = (c.hex||'#888888').replace('#','');
     const L = (0.299*parseInt(hx.slice(0,2),16)+0.587*parseInt(hx.slice(2,4),16)+0.114*parseInt(hx.slice(4,6),16))/255;
-    const bg = `color-mix(in srgb, ${c.hex} ${L>0.62?60:76}%, black)`;
+    const bg = `linear-gradient(160deg, color-mix(in srgb, ${c.hex} 92%, white), ${c.hex})`;
     const sh = `color-mix(in srgb, ${c.hex} 38%, transparent)`;
     return `<button class="categoria-tile" style="background:${bg};--tile-shadow:${sh}" onclick="goToIdeiasCategoria('${c.key}')">
       <span class="ic">${catIcon(c.key)}</span>
@@ -1937,7 +1954,11 @@ function shiftMonth(delta){
   renderCalendar();
 }
 let selectedCalDay = null;
-function selectCalDay(ds){ selectedCalDay = ds; renderCalendar(); }
+function selectCalDay(ds){
+  selectedCalDay = ds; renderCalendar();
+  const el = document.getElementById('dayPanel');
+  if(el){ try{ el.scrollIntoView({behavior:'smooth', block:'center'}); }catch(e){} }
+}
 function renderCalendar(){
   if(!selectedCalDay) selectedCalDay = todayStr();
   const y = currentMonthDate.getFullYear(), m = currentMonthDate.getMonth();
@@ -1960,16 +1981,19 @@ function renderCalendar(){
     cell.className = 'cal-cell'+(inMonth?'':' other-month')+(ds===todayStr()?' today':'');
     if(ds===selectedCalDay) cell.classList.add('selected');
     cell.onclick = ()=>selectCalDay(ds);
-    const shown = dayEvents.slice(0,2);
+    const MAXB = 3;
+    const shown = dayEvents.slice(0, dayEvents.length>MAXB ? MAXB-1 : MAXB);
     const extra = dayEvents.length - shown.length;
     cell.innerHTML = `<span class="daynum">${cellDate.getDate()}</span>
       ${shown.map(e=>{
         const p = state.places.find(pl=>pl.id===e.placeId);
-        const c = p? catInfo(p.category).hex:'#D8A94E';
+        const hx = p? catInfo(p.category).hex : '#D8A94E';
+        const hh = hx.replace('#','');
+        const L = (0.299*parseInt(hh.slice(0,2),16)+0.587*parseInt(hh.slice(2,4),16)+0.114*parseInt(hh.slice(4,6),16))/255;
         const label = p? p.name : 'Date';
-        return `<span class="pill" style="background:${c}">${escapeHtml(label)}</span>`;
+        return `<span class="bar" style="background:${hx}">${escapeHtml(label)}</span>`;
       }).join('')}
-      ${extra>0? `<span class="more">+${extra} mais</span>`:''}`;
+      ${extra>0? `<span class="more">+${extra}</span>`:''}`;
     grid.appendChild(cell);
   }
   renderDayPanel();
@@ -2399,6 +2423,7 @@ function removeCategoriaEdit(i){
 async function saveCategorias(){
   if(categoriasEdit.some(c=>!c.label.trim())){ alert('Toda categoria precisa de um nome.'); return; }
   state.categories = categoriasEdit;
+  categoriesTouched = true;
   await saveState();
   closeOverlay('overlayCategorias');
   populateFilters(); renderPlaces(); renderCalendar(); renderTimeline(); renderProximo();
