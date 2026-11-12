@@ -781,13 +781,14 @@ input[type=checkbox]{ accent-color: var(--gold); }
 .home-daychip.sel{ box-shadow:inset 0 0 0 2px var(--gold); }
 .home-daychip.today.sel{ box-shadow:inset 0 0 0 3px rgba(255,255,255,.75); }
 .hw-day{ margin-top:14px; padding-top:12px; border-top:1px solid color-mix(in srgb, var(--text) 8%, transparent); }
-.hw-day-h{ font-size:12.5px; font-weight:800; color:var(--text-dim); margin-bottom:8px; }
+.hw-day-top{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px; }
+.hw-day-h{ font-size:12.5px; font-weight:800; color:var(--text-dim); margin:0; }
 .hw-day-h::first-letter{ text-transform:uppercase; }
 .hw-ev{ display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:14px; background:color-mix(in srgb, var(--c) 13%, var(--surface)); margin-bottom:6px; font-weight:700; font-size:14px; cursor:pointer; }
 .hw-ev i{ width:10px; height:10px; border-radius:50%; background:var(--c); flex:none; }
 .hw-ev span{ min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .hw-none{ font-size:13px; color:var(--text-faint); margin-bottom:8px; }
-.hw-add{ width:100%; border:1.5px dashed color-mix(in srgb, var(--gold) 50%, transparent); background:none; color:var(--gold); font-weight:800; font-size:13.5px; padding:10px; border-radius:14px; cursor:pointer; }
+.hw-add{ flex:none; border:1.5px dashed color-mix(in srgb, var(--gold) 50%, transparent); background:none; color:var(--gold); font-weight:800; font-size:12.5px; padding:6px 12px; border-radius:999px; cursor:pointer; font-family:inherit; }
 </style>
 </head>
 <body>
@@ -1652,7 +1653,7 @@ function renderHomeDay(ds){
     const nm = p ? p.name : 'Date marcado';
     return `<div class="hw-ev" style="--c:${c}" onclick="${p ? `openPlaceDetail('${p.id}')` : `openEventForm('${ds}')`}"><i></i><span>${escapeHtml(nm)}</span></div>`;
   }).join('');
-  box.innerHTML = `<div class="hw-day-h">${escapeHtml(head)}</div>${rows || '<div class="hw-none">Nenhum date marcado.</div>'}<button class="hw-add" onclick="requireAuth(()=>openEventForm('${ds}'))">+ Marcar date</button>`;
+  box.innerHTML = `<div class="hw-day-top"><div class="hw-day-h">${escapeHtml(head)}</div><button class="hw-add" onclick="requireAuth(()=>openEventForm('${ds}'))">+ Marcar date</button></div>${rows || '<div class="hw-none">Nenhum date marcado.</div>'}`;
 }
 function updateWeekLabel(){
   const grid = document.getElementById('homeWeekGrid'); const lab = document.getElementById('homeWeekLabel'); const hint = document.getElementById('homeWeekHint');
