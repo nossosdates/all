@@ -927,9 +927,9 @@ input[type=checkbox]{ accent-color: var(--gold); }
       <input type="date" id="fStartDate">
     </div>
     <div class="field">
-      <label id="fFirstLbl">Primeiro encontro (opcional)</label>
+      <label id="fFirstLbl">Primeiro date (opcional)</label>
       <input type="date" id="fFirstDate">
-      <label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-weight:500;cursor:pointer"><input type="checkbox" id="fFirstUnknown" onchange="syncFirstUnknown('f')" style="width:16px;height:16px"> Não lembro do primeiro encontro</label>
+      <label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-weight:500;cursor:pointer"><input type="checkbox" id="fFirstUnknown" onchange="syncFirstUnknown('f')" style="width:16px;height:16px"> Não lembro do primeiro date</label>
     </div>
     <div class="sheet-actions">
       <button class="btn btn-ghost" onclick="closeOverlay('overlayRelacionamento')">Cancelar</button>
@@ -1151,8 +1151,8 @@ input[type=checkbox]{ accent-color: var(--gold); }
       </div>
       <div class="field" id="cWeddingF" style="display:none"><label>Data do casamento</label><input type="date" id="cWedding"></div>
       <div class="field" id="cStartF"><label>Pediu em namoro em</label><input type="date" id="cStart"></div>
-      <div class="field"><label id="cFirstLbl">Primeiro encontro</label><input type="date" id="cFirst">
-        <label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-weight:500;cursor:pointer"><input type="checkbox" id="cUnknown" onchange="syncFirstUnknown('c')" style="width:16px;height:16px"> Não lembro do primeiro encontro</label>
+      <div class="field"><label id="cFirstLbl">Primeiro date</label><input type="date" id="cFirst">
+        <label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-weight:500;cursor:pointer"><input type="checkbox" id="cUnknown" onchange="syncFirstUnknown('c')" style="width:16px;height:16px"> Não lembro do primeiro date</label>
       </div>
       <p class="gate-p small">Tudo isso é opcional e dá pra mudar depois em Menu → Nossa história.</p>
       <div class="g-err" id="cErr"></div>
@@ -1561,7 +1561,7 @@ function setRelStatus(st){
   document.querySelectorAll('#fStatusChips .chip').forEach(c=>c.classList.toggle('selected', c.dataset.s===st));
   document.getElementById('fWeddingF').style.display = st==='casados' ? 'block' : 'none';
   document.getElementById('fStartF').style.display = st==='conhecendo' ? 'none' : 'block';
-  document.getElementById('fFirstLbl').textContent = st==='conhecendo' ? 'Data do primeiro date' : 'Primeiro encontro (opcional)';
+  document.getElementById('fFirstLbl').textContent = st==='conhecendo' ? 'Data do primeiro date' : 'Primeiro date (opcional)';
   document.getElementById('fStartLbl').textContent = st==='casados' ? 'Namoro desde (quando pediu em namoro)' : 'Namorando desde (quando pediu em namoro)';
 }
 function syncFirstUnknown(pfx){
@@ -1633,9 +1633,9 @@ function renderJuntosHa(){
     return;
   }
   const sub = [];
-  if(casados){ sub.push(`Casados desde ${formatDateLong(state.weddingDate)}`); if(state.startDate) sub.push(`Namoro desde ${formatDateLong(state.startDate)}`); }
+  if(state.firstDate) sub.push(`Primeiro date em ${formatDateLong(state.firstDate)}`);
+  if(casados){ if(state.startDate) sub.push(`Namoro desde ${formatDateLong(state.startDate)}`); sub.push(`Casados desde ${formatDateLong(state.weddingDate)}`); }
   else sub.push(`Namorando desde ${formatDateLong(state.startDate)}`);
-  if(state.firstDate) sub.push(`Primeiro encontro em ${formatDateLong(state.firstDate)}`);
   let foot = '';
   const ser = specialSeries();
   if(ser.length){
@@ -2473,7 +2473,7 @@ async function saveCategorias(){
   categoriesTouched = true;
   await saveState();
   closeOverlay('overlayCategorias');
-  populateFilters(); renderPlaces(); renderCalendar(); renderTimeline(); renderProximo();
+  populateFilters(); renderPlaces(); renderCalendar(); renderTimeline(); renderProximo(); renderCategoriasGrid();
 }
 /* ---------- INIT ---------- */
 function renderAll(){
@@ -2668,7 +2668,7 @@ function gateStatus(st){
   document.querySelectorAll('#cStatusChips .chip').forEach(c=>c.classList.toggle('selected', c.dataset.s===st));
   $g('cWeddingF').style.display = st==='casados' ? 'block' : 'none';
   $g('cStartF').style.display = st==='conhecendo' ? 'none' : 'block';
-  $g('cFirstLbl').textContent = st==='conhecendo' ? 'Data do primeiro date' : 'Primeiro encontro';
+  $g('cFirstLbl').textContent = st==='conhecendo' ? 'Data do primeiro date' : 'Primeiro date';
 }
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 function genCode(){
