@@ -932,6 +932,8 @@ input[type=checkbox]{ accent-color: var(--gold); }
       <button class="menu-row" id="menuConviteRow" style="display:none" onclick="closeOverlay('overlayMenu'); openConvite();"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg></span><span class="mr-t" id="menuConviteTxt">Convidar parceiro(a)</span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
       <button class="menu-row" onclick="window.open('/privacidade.html','_blank')"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg></span><span class="mr-t">Privacidade</span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
       <button class="menu-row" onclick="window.open('/termos.html','_blank')"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg></span><span class="mr-t">Termos de uso</span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
+      <button class="menu-row" onclick="exportarDados()"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-4-4m4 4 4-4M5 19h14"/></svg></span><span class="mr-t">Exportar meus dados</span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
+      <button class="menu-row" onclick="openExcluir()"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg></span><span class="mr-t">Excluir minha conta</span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
       <button class="menu-row" onclick="closeOverlay('overlayMenu'); gateSignOut();"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg></span><span class="mr-t">Sair da conta<small id="menuAcc" style="display:block;font-weight:500;font-size:11.5px;color:var(--text-dim)"></small></span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
 
     </div>
@@ -1357,6 +1359,22 @@ input[type=checkbox]{ accent-color: var(--gold); }
   </div>
 </div>
 
+<!-- MODAL: Excluir conta -->
+<div class="overlay" id="overlayExcluir">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h2>Excluir minha conta</h2>
+    <p class="gate-p" style="text-align:left" id="delTxt"></p>
+    <div class="field" id="delPwF" style="display:none"><label>Sua senha</label><input type="password" id="delPw" autocomplete="current-password"></div>
+    <div class="field"><label>Para confirmar, digite EXCLUIR</label><input type="text" id="delConf" autocomplete="off" autocapitalize="characters"></div>
+    <div class="g-err" id="delErr"></div>
+    <div class="sheet-actions">
+      <button class="btn btn-ghost" onclick="closeOverlay('overlayExcluir')">Cancelar</button>
+      <button class="btn btn-primary" id="delBtn" style="background:#D9453A" onclick="confirmarExcluir()">Excluir para sempre</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL: Adicionar ao calendário -->
 <div class="overlay" id="overlayCal">
   <div class="sheet">
@@ -1372,8 +1390,8 @@ input[type=checkbox]{ accent-color: var(--gold); }
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-  import { getFirestore, doc, setDoc, getDoc, updateDoc, onSnapshot, arrayUnion } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
-  import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signInWithRedirect, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc, onSnapshot, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signInWithRedirect, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut, updateProfile, deleteUser, reauthenticateWithPopup, reauthenticateWithCredential, EmailAuthProvider } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyC8SdTZEi5TcJNEnrX16YAfb9kCf329yT4",
@@ -1404,11 +1422,22 @@ input[type=checkbox]{ accent-color: var(--gold); }
       signUp: async (e,p,name) => { const c = await createUserWithEmailAndPassword(auth, e, p); if(name) await updateProfile(c.user, { displayName:name }); },
       reset: e => sendPasswordResetEmail(auth, e),
       signOut: () => signOut(auth),
+      provider: () => { const u = auth.currentUser; const p = u && u.providerData && u.providerData[0]; return p ? p.providerId : ''; },
+      reauth: async pw => {
+        const u = auth.currentUser;
+        if(!u) throw { code:'auth/no-user' };
+        const prov = u.providerData && u.providerData[0] && u.providerData[0].providerId;
+        if(prov === 'google.com') await reauthenticateWithPopup(u, new GoogleAuthProvider());
+        else await reauthenticateWithCredential(u, EmailAuthProvider.credential(u.email, pw));
+      },
+      deleteAccount: () => deleteUser(auth.currentUser),
     },
     db: {
       get: async path => { const sn = await getDoc(P(path)); return sn.exists() ? sn.data() : null; },
       set: (path, data, merge) => setDoc(P(path), data, merge ? { merge:true } : undefined),
       watch: (path, ok, err) => onSnapshot(P(path), sn => ok(sn.exists() ? sn.data() : null), err),
+      remove: path => deleteDoc(P(path)),
+      leave: (code, uid) => updateDoc(P('couples/'+code), { members: arrayRemove(uid) }),
       join: (code, uid, name) => updateDoc(P('couples/'+code), { members: arrayUnion(uid), ['memberNames.'+uid]: name }),
     },
   };
@@ -2043,6 +2072,7 @@ function metaLineWithMaps(p){
 
 function openPlaceForm(existing){
   if(!existing && !canAddPlace()){ openPlano('ideias'); return; }
+  if(!existing && docTooBig()){ alert('O espaço de ideias e dates de vocês está quase cheio. Para guardar mais, apague algumas ideias antigas ou fotos por link. Escreva para contato@nossosdates.com.br se precisar de ajuda.'); return; }
   editingPlaceId = existing? existing.id : null;
   document.getElementById('placeFormTitle').textContent = existing? 'Editar ideia' : 'Nova ideia';
   document.getElementById('fName').value = existing? existing.name : '';
@@ -3037,16 +3067,90 @@ function gcalUrl(id){
   return 'https://calendar.google.com/calendar/render?'+q.toString();
 }
 
+
+/* ---------- EXPORTAR / EXCLUIR CONTA ---------- */
+async function exportarDados(){
+  closeOverlay('overlayMenu');
+  const d = coupleDoc || {};
+  const out = {
+    exportadoEm: new Date().toISOString(),
+    app: 'Nossos Dates',
+    conta: { email: ME ? ME.email : '' },
+    casal: { nomes: (d.couple && d.couple.names) || null, status: d.status || null, inicioNamoro: d.startDate || null, primeiroDate: d.firstDate || null, casamento: d.weddingDate || null },
+    ideias: state.places, dates: state.events, categorias: state.categories
+  };
+  const txt = JSON.stringify(out, null, 2);
+  const nome = 'nossos-dates-' + new Date().toISOString().slice(0,10) + '.json';
+  try{
+    const file = new File([txt], nome, { type:'application/json' });
+    if(navigator.canShare && navigator.canShare({ files:[file] })){ await navigator.share({ files:[file], title:'Meus dados do Nossos Dates' }); return; }
+  }catch(e){ if(e && e.name==='AbortError') return; }
+  try{
+    const url = URL.createObjectURL(new Blob([txt], { type:'application/json' }));
+    const a = document.createElement('a'); a.href = url; a.download = nome; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 4000);
+  }catch(e){ alert('Não consegui gerar o arquivo neste aparelho.'); }
+}
+function openExcluir(){
+  closeOverlay('overlayMenu');
+  const pw = FB().auth.provider() === 'password';
+  $g('delPwF').style.display = pw ? 'block' : 'none';
+  $g('delPw').value = ''; $g('delConf').value = ''; $g('delErr').textContent = '';
+  const sozinho = coupleRef && coupleRef.startsWith('couples/') && coupleDoc && (coupleDoc.members||[]).length === 1;
+  $g('delTxt').innerHTML = coupleRef === 'casal/state'
+    ? 'Sua conta será apagada. O que o casal guardou continua lá para o(a) parceiro(a).'
+    : sozinho
+      ? 'Sua conta e <b>tudo o que você guardou</b> (ideias, dates, datas) serão apagados para sempre.'
+      : 'Sua conta será apagada e você sai do casal. O que vocês guardaram <b>continua para o(a) parceiro(a)</b>. Se quiser tudo apagado, peça por e-mail antes.';
+  openOverlayEl('overlayExcluir');
+}
+async function confirmarExcluir(){
+  const err = $g('delErr'); err.textContent = '';
+  if($g('delConf').value.trim().toUpperCase() !== 'EXCLUIR'){ err.textContent = 'Digite EXCLUIR para confirmar.'; return; }
+  const btn = $g('delBtn'); btn.disabled = true;
+  try{
+    try{ await FB().auth.reauth($g('delPw').value); }
+    catch(e){
+      err.textContent = (e && (e.code==='auth/wrong-password' || e.code==='auth/invalid-credential')) ? 'Senha incorreta.'
+        : 'Por segurança, saia da conta, entre de novo e repita. Nada foi apagado.';
+      btn.disabled = false; return;
+    }
+    const uid = ME.uid;
+    if(coupleRef && coupleRef.startsWith('couples/')){
+      const code = currentCoupleCode();
+      if(coupleDoc && (coupleDoc.members||[]).length <= 1) await FB().db.remove('couples/'+code);
+      else await FB().db.leave(code, uid);
+    }
+    if(unwatchCouple){ try{ unwatchCouple(); }catch(e){} unwatchCouple = null; }
+    await FB().db.remove('users/'+uid);
+    await FB().auth.deleteAccount();
+    closeOverlay('overlayExcluir');
+    state = blankState(); coupleRef = null; coupleDoc = null;
+    alert('Sua conta foi excluída. Obrigado por ter usado o Nossos Dates. 💕');
+  }catch(e){
+    console.error(e);
+    err.textContent = 'Não consegui concluir agora. Confere a internet e tenta de novo, ou escreva para contato@nossosdates.com.br.';
+  }
+  btn.disabled = false;
+}
+
 /* ---------- PLANO (grátis / pro) ---------- */
 const FREE_LIMITS = { places: 30, categories: 9, sorteios: 5 };   // sorteios por mês
 const PRO_MAX_CATEGORIES = 30;
-const CHECKOUT_ENABLED = false;   // ligar quando o pagamento (Stripe) estiver configurado
+const CHECKOUT_ENABLED = false;
+/* PRO DE LANÇAMENTO: enquanto estiver true, todo casal tem o Pro de graça, sem data marcada. Para encerrar, troque para false
+   e também mude a data na função lancamento() das regras do Firebase para uma data que já passou. */
+const LAUNCH_PRO = true;
+function launchPro(){ return LAUNCH_PRO; }
 function planInfo(){
   if(!coupleRef || coupleRef==='casal/state') return { pro:true, legacy:true };       // casal original: cortesia, sem limites
   const d = coupleDoc || {};
   const ok = d.plan==='pro' && (!d.planUntil || Number(d.planUntil) > Date.now());
+  if(!ok && launchPro()) return { pro:true, legacy:false, launch:true };
   return { pro: ok, legacy:false };
 }
+const DOC_MAX_BYTES = 800000;   /* o Firebase aceita ~1 MB por documento: paramos antes para nunca perder um salvamento */
+function docTooBig(){ try{ return new Blob([JSON.stringify(state)]).size > DOC_MAX_BYTES; }catch(e){ return false; } }
 function canAddPlace(){ return planInfo().pro || state.places.length < FREE_LIMITS.places; }
 function canAddCategory(){ return planInfo().pro ? state.categories.length < PRO_MAX_CATEGORIES : false; }
 const PAYWALL_MSG = {
@@ -3059,7 +3163,7 @@ function openPlano(reason){
   const pi = planInfo();
   $g('planTitle').textContent = pi.pro ? 'Seu plano: Pro' : (reason ? 'Vá para o Pro' : 'Meu plano');
   $g('planSub').textContent = pi.pro
-    ? (pi.legacy ? 'Vocês têm o Pro de cortesia, sem limites. 💕' : 'Obrigado por apoiar o app! Vocês têm todos os recursos.')
+    ? (pi.legacy ? 'Vocês têm o Pro de cortesia, sem limites. 💕' : pi.launch ? 'Pro de lançamento: tudo liberado de graça por tempo limitado. Vamos avisar com antecedência antes de acabar, e o que vocês já guardaram continua guardado.' : 'Obrigado por apoiar o app! Vocês têm todos os recursos.')
     : (PAYWALL_MSG[reason] || `Vocês usam ${state.places.length} de ${FREE_LIMITS.places} ideias do plano grátis.`);
   $g('planFree').classList.toggle('current', !pi.pro);
   $g('planPro').classList.toggle('current', pi.pro);
@@ -3079,7 +3183,7 @@ function renderPlanMenu(){
   document.querySelectorAll('.pro-pill').forEach(el=>{ if(el.closest('#especiaisCard')) return; el.style.display = pi.pro ? 'none' : 'inline-block'; });
   renderEspeciaisCard();
   const t = $g('menuPlanTxt'); if(!t) return;
-  t.textContent = pi.pro ? (pi.legacy ? 'Pro (cortesia)' : 'Pro') : `Grátis · ${state.places.length}/${FREE_LIMITS.places} ideias`;
+  t.textContent = pi.pro ? (pi.legacy ? 'Pro (cortesia)' : pi.launch ? 'Pro de lançamento' : 'Pro') : `Grátis · ${state.places.length}/${FREE_LIMITS.places} ideias`;
 }
 
 
