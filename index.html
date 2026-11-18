@@ -299,6 +299,42 @@ body{ padding-bottom:calc(130px + env(safe-area-inset-bottom, 0px)); }
   background: var(--surface); border:1px solid var(--border); color: var(--text);
   border-radius: 20px; padding: 7px 12px; font-size: 12.5px;
 }
+
+/* Sugestões (Pro) */
+.sug-box{ margin:2px 0 14px; }
+.sug-h{ display:flex; align-items:center; justify-content:space-between; margin:0 2px 8px; }
+.sug-h b{ font-size:14px; font-weight:800; color:var(--text); }
+.sug-h button{ background:none; color:var(--gold); font-size:12.5px; font-weight:700; font-family:inherit; padding:4px 2px; }
+.sug-row{ display:flex; gap:10px; overflow-x:auto; scroll-snap-type:x proximity; padding:2px 2px 10px; margin:0 -2px; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+.sug-row::-webkit-scrollbar{ display:none; }
+.sug-card{ flex:none; width:212px; scroll-snap-align:start; background:var(--surface); border-radius:20px; padding:12px; box-shadow:var(--shadow-card); display:flex; flex-direction:column; gap:6px; border:1.5px dashed color-mix(in srgb, var(--cat-color) 45%, transparent); }
+.sug-top{ display:flex; align-items:center; gap:8px; }
+.sug-ic{ width:34px; height:34px; border-radius:11px; display:flex; align-items:center; justify-content:center; color:#fff; flex:none; background:linear-gradient(160deg, color-mix(in srgb, var(--cat-color) 92%, white), var(--cat-color)); }
+.sug-cat{ font-size:10.5px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--cat-color); }
+.sug-name{ font-size:14.5px; font-weight:800; line-height:1.25; color:var(--text); }
+.sug-tip{ font-size:12px; color:var(--text-dim); line-height:1.35; flex:1; }
+.sug-add{ margin-top:2px; background:color-mix(in srgb, var(--gold) 14%, transparent); color:var(--gold); font-weight:800; font-size:13px; padding:9px; border-radius:999px; font-family:inherit; }
+.sug-lock{ width:100%; display:flex; align-items:center; gap:10px; text-align:left; background:var(--surface); border-radius:18px; padding:12px 14px; box-shadow:var(--shadow-card); margin:2px 0 14px; font-family:inherit; color:var(--text); font-size:13.5px; font-weight:700; }
+.sug-lock small{ display:block; font-weight:500; color:var(--text-dim); font-size:12px; }
+.sug-pill{ margin-left:auto; flex:none; background:var(--gold); color:#FFF7F2; font-size:11px; font-weight:800; padding:4px 9px; border-radius:999px; }
+
+/* Ideias: cabeçalho, segmentos e filtros em uma linha */
+.ideias-head{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; }
+.ideias-head .screen-title{ margin:6px 0; }
+.ideias-head .add-fab{ margin-left:0; padding:10px 18px; font-size:14px; flex:none; }
+.ideias-searchrow{ display:flex; gap:8px; align-items:center; margin-bottom:12px; }
+.ideias-searchrow .chip-fav{ flex:none; width:44px; height:44px; padding:0; display:flex; align-items:center; justify-content:center; background:var(--surface); border:1.5px solid transparent; border-radius:50%; color:var(--text-dim); box-shadow:var(--shadow-card); }
+.ideias-searchrow .chip-fav.selected{ border-color:var(--gold); color:var(--gold); }
+.ideias-search{ flex:1; min-width:0; width:auto; box-shadow:var(--shadow-card); border:1px solid transparent; background:var(--surface); color:var(--text); border-radius:20px; padding:10px 14px; font-size:14px; }
+.ideias-seg{ display:flex; gap:4px; padding:4px; border-radius:999px; background:var(--surface); box-shadow:var(--shadow-card); margin-bottom:12px; }
+.ideias-seg button{ flex:1; background:none; color:var(--text-dim); font-size:12.5px; font-weight:700; padding:8px 4px; border-radius:999px; font-family:inherit; white-space:nowrap; }
+.ideias-seg button i{ font-style:normal; font-weight:600; opacity:.65; margin-left:2px; }
+.ideias-seg button.on{ background:var(--gold); color:#FFF7F2; }
+.ideias-chips{ display:flex; gap:6px; overflow-x:auto; padding:2px 2px 8px; margin:0 -2px 8px; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+.ideias-chips::-webkit-scrollbar{ display:none; }
+.ideias-chips select{ flex:none; background:var(--surface); border:1.5px solid transparent; color:var(--text); border-radius:999px; padding:8px 12px; font-size:13px; font-weight:600; font-family:inherit; box-shadow:var(--shadow-card); max-width:60vw; }
+.ideias-chips select.active{ border-color:var(--gold); color:var(--gold); }
+.pc-done{ color:var(--gold); font-weight:700; }
 .add-fab{
   background: var(--gold); color:#FFF7F2; font-weight:700; border-radius: 20px;
   padding: 7px 14px; font-size:12.5px; margin-left:auto;
@@ -857,19 +893,29 @@ input[type=checkbox]{ accent-color: var(--gold); }
 
 <!-- SCREEN: IDEIAS -->
 <div class="screen" id="screen-ideias" style="display:none">
-  <h1 class="screen-title">Ideias</h1>
-  <div class="filter-bar">
-    <input type="text" id="searchIdeias" class="search-input" placeholder="Buscar ideias..." oninput="renderPlaces()" style="flex:1 1 100%;">
+  <div class="ideias-head">
+    <h1 class="screen-title">Ideias</h1>
+    <button class="add-fab" onclick="requireAuth(openPlaceForm)">+ Ideia</button>
+  </div>
+  <div class="ideias-searchrow">
+    <input type="text" id="searchIdeias" class="search-input ideias-search" placeholder="Buscar ideias..." oninput="renderPlaces()">
+    <button class="chip-fav" id="filtroFavoritosBtn" aria-label="Só favoritas" onclick="toggleFiltroFavoritos()"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M12 20.3s-7.3-4.5-9.7-9C.7 7.8 2.1 4.5 5.3 3.5a5.5 5.5 0 0 1 6.7 2.4A5.5 5.5 0 0 1 18.7 3.5c3.2 1 4.6 4.3 3 7.8-2.4 4.5-9.7 9-9.7 9Z"/></svg></button>
+  </div>
+  <div class="ideias-seg" id="ideiasSeg">
+    <button data-s="todas" class="on" onclick="setIdeiasStatus('todas')">Todas <i></i></button>
+    <button data-s="fazer" onclick="setIdeiasStatus('fazer')">Para fazer <i></i></button>
+    <button data-s="feitas" onclick="setIdeiasStatus('feitas')">Já fizemos <i></i></button>
+  </div>
+  <div class="ideias-chips">
     <select id="filterCategoria" onchange="renderPlaces()"></select>
     <select id="filterCidade" onchange="renderPlaces()"></select>
     <select id="ordenarPor" onchange="renderPlaces()">
-      <option value="nome">Nome (A-Z)</option>
-      <option value="recente">Mais recente</option>
-      <option value="visitado">Mais visitado</option>
+      <option value="nome">A–Z</option>
+      <option value="recente">Recentes</option>
+      <option value="visitado">Mais feitas</option>
     </select>
-    <button class="toggle-opt" id="filtroFavoritosBtn" style="width:auto;flex:none;padding:7px 12px" onclick="toggleFiltroFavoritos()"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:4px"><path d="M12 20.3s-7.3-4.5-9.7-9C.7 7.8 2.1 4.5 5.3 3.5a5.5 5.5 0 0 1 6.7 2.4A5.5 5.5 0 0 1 18.7 3.5c3.2 1 4.6 4.3 3 7.8-2.4 4.5-9.7 9-9.7 9Z"/></svg> Favoritos</button>
-    <button class="add-fab" onclick="requireAuth(openPlaceForm)"><svg viewBox="0 0 24 24" width="16" height="16" fill="var(--gold)" style="vertical-align:-3px;margin-right:2px"><circle cx="12" cy="12" r="10"/><path d="M12 7v10M7 12h10" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg> Ideia</button>
   </div>
+  <div id="sugBox"></div>
   <div id="placesList"></div>
 </div>
 
@@ -1092,7 +1138,7 @@ input[type=checkbox]{ accent-color: var(--gold); }
       </label>
     </div>
     <div class="field">
-      <label>Excluir visitados recentemente</label>
+      <label>Excluir o que já fizemos recentemente</label>
       <div class="toggle-row" id="sExcluirRow">
         <button class="toggle-opt selected" data-v="0" onclick="setExcluir(0)">Nenhum filtro</button>
         <button class="toggle-opt" data-v="30" onclick="setExcluir(30)">Últimos 30 dias</button>
@@ -1277,7 +1323,7 @@ input[type=checkbox]{ accent-color: var(--gold); }
           <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span><b>Ideias e sorteios ilimitados</b></span></li>
           <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span><b>Retrospectiva do casal</b></span></li>
           <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span><b>Datas especiais</b> e lembretes</span></li>
-          <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span><b>Pacotes de dates</b> prontos</span></li>
+          <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span><b>Pacotes de dates</b> e sugestões de ideias prontas</span></li>
           <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span><b>Categorias extras</b></span></li>
           <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span><b>Uma assinatura</b> para o casal</span></li>
         </ul>
@@ -1868,12 +1914,15 @@ function renderProximo(){
 /* ---------- PLACES TAB ---------- */
 function populateFilters(){
   const catSel = document.getElementById('filterCategoria');
-  catSel.innerHTML = '<option value="">Todas categorias</option>' + state.categories.map(c=>`<option value="${c.key}">${c.label}</option>`).join('');
+  catSel.innerHTML = '<option value="">Categoria</option>' + state.categories.map(c=>`<option value="${c.key}">${c.label}</option>`).join('');
   const cities = [...new Set(state.places.map(p=>p.city).filter(Boolean))];
   const citySel = document.getElementById('filterCidade');
-  citySel.innerHTML = '<option value="">Todas cidades</option>' + cities.map(c=>`<option value="${c}">${c}</option>`).join('');
+  citySel.innerHTML = '<option value="">Cidade</option>' + cities.map(c=>`<option value="${c}">${c}</option>`).join('');
 }
 let filtroFavoritosAtivo = false;
+let ideiasStatus = 'todas';
+const feitoCount = id => state.events.filter(e=>e.placeId===id && e.date<=todayStr()).length;   /* só conta date que já aconteceu */
+function setIdeiasStatus(v){ ideiasStatus = v; renderPlaces(); }
 function toggleFiltroFavoritos(){
   filtroFavoritosAtivo = !filtroFavoritosAtivo;
   document.getElementById('filtroFavoritosBtn').classList.toggle('selected', filtroFavoritosAtivo);
@@ -1881,14 +1930,14 @@ function toggleFiltroFavoritos(){
 }
 function placeCardHtml(p){
   const c = catInfo(p.category);
-  const visits = state.events.filter(e=>e.placeId===p.id);
+  const feitos = feitoCount(p.id);
   const price = Math.min(3, Math.max(1, Number(p.price||1)));
   const priceHtml = `<span class="pc-price"><b>${'$'.repeat(price)}</b><i>${'$'.repeat(3-price)}</i></span>`;
   const thumb = p.photo? `<img src="${escapeHtml(p.photo)}" onerror="this.remove()">` : catIcon(p.category, 30);
   const bits = [];
   if(p.city) bits.push(`<span>${escapeHtml(p.city)}</span>`);
   bits.push(priceHtml);
-  if(visits.length) bits.push(`<span>${visits.length}x visitado</span>`);
+  if(feitos) bits.push(`<span class="pc-done">✓ Feito ${feitos}x</span>`);
   if(p.addedBy) bits.push(`<span style="color:var(--gold);font-weight:600">${escapeHtml(p.addedBy)}</span>`);
   return `<div class="place-card" style="--cat-color:${c.hex}" onclick="openPlaceDetail('${p.id}')">
       <div class="pc-thumb">${thumb}</div>
@@ -1906,18 +1955,29 @@ function renderPlaces(){
   const cityF = document.getElementById('filterCidade').value;
   const searchF = document.getElementById('searchIdeias').value.trim().toLowerCase();
   const ordenar = document.getElementById('ordenarPor').value;
-  let list = state.places.filter(p => (!catF || p.category===catF) && (!cityF || p.city===cityF) && (!searchF || p.name.toLowerCase().includes(searchF)) && (!filtroFavoritosAtivo || p.favorite));
+  const base = state.places.filter(p => (!catF || p.category===catF) && (!cityF || p.city===cityF) && (!searchF || p.name.toLowerCase().includes(searchF)) && (!filtroFavoritosAtivo || p.favorite));
+  const nFeitas = base.filter(p=>feitoCount(p.id)>0).length;
+  const cnt = { todas: base.length, fazer: base.length-nFeitas, feitas: nFeitas };
+  document.querySelectorAll('#ideiasSeg button').forEach(b=>{ b.classList.toggle('on', b.dataset.s===ideiasStatus); b.querySelector('i').textContent = cnt[b.dataset.s]; });
+  document.getElementById('filterCategoria').classList.toggle('active', !!catF);
+  document.getElementById('filterCidade').classList.toggle('active', !!cityF);
+  let list = base.filter(p => ideiasStatus==='todas' || (ideiasStatus==='feitas') === (feitoCount(p.id)>0));
   const container = document.getElementById('placesList');
   if(list.length===0){
-    container.innerHTML = `${emptyState(searchF? "search":"bulb", `${searchF? 'Nada encontrado pra essa busca.' : 'Nenhuma ideia por aqui ainda.<br>Toca em "+ Ideia" pra começar a lista.'}`)}`;
+    const vazio = searchF ? 'Nada encontrado pra essa busca.'
+      : ideiasStatus==='feitas' ? 'Nenhuma ideia realizada ainda.<br>Quando vocês forem, ela aparece aqui.'
+      : (ideiasStatus==='fazer' && state.places.length) ? 'Vocês já fizeram tudo da lista! 🎉<br>Toca em "+ Ideia" pra adicionar mais.'
+      : 'Nenhuma ideia por aqui ainda.<br>Toca em "+ Ideia" pra começar a lista.';
+    container.innerHTML = emptyState(searchF? "search":"bulb", vazio);
   } else {
-    const visitCount = id => state.events.filter(e=>e.placeId===id).length;
+    const visitCount = feitoCount;
     if(ordenar==='recente') list.sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||''));
     else if(ordenar==='visitado') list.sort((a,b)=>visitCount(b.id)-visitCount(a.id));
     else list.sort((a,b)=>a.name.localeCompare(b.name));
     container.innerHTML = list.map(placeCardHtml).join('');
   }
   renderFavoritos();
+  if(typeof renderSugestoes==='function') renderSugestoes();
 }
 function renderFavoritos(){
   const container = document.getElementById('favoritosList');
@@ -2037,7 +2097,7 @@ function catEditCor(h){ if(categoriasEdit[catEditIdx]){ categoriasEdit[catEditId
 function doneCatalogo(){ closeOverlay('overlayCatalogo'); if(catEditMode) renderCategoriasGrid(); }
 function goToIdeiasCategoria(key){
   setScreen('ideias');
-  document.getElementById('filterCategoria').value = key;
+  document.getElementById('filterCategoria').value = key; ideiasStatus = 'todas';
   renderPlaces();
 }
 const _svgO = (inner, size) => `<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="currentColor" fill-opacity=".14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`;
@@ -3158,6 +3218,7 @@ const PAYWALL_MSG = {
   ideias: `Vocês chegaram nas ${FREE_LIMITS.places} ideias do plano grátis. Com o Pro dá para guardar quantas quiserem.`,
   categorias: 'Criar categorias novas é do plano Pro. No grátis dá para mudar o nome e a cor das 9 categorias.',
   galeria: 'A galeria de memórias é do plano Pro.',
+  sugestoes: 'As sugestões de ideias prontas são do plano Pro.',
 };
 function openPlano(reason){
   const pi = planInfo();
@@ -3491,6 +3552,87 @@ async function addPack(key){
   await saveState();
   populateFilters(); renderPlaces(); renderCounter(); renderPlanMenu(); renderPacotes();
   alert(novos.length+(novos.length===1?' ideia adicionada!':' ideias adicionadas!')+' Vocês acham na aba Ideias.');
+}
+
+
+/* ---------- PRO: sugestões de ideias (uma por uma) ---------- */
+const SUGESTOES = [
+  ['Café da manhã em padaria nova','restaurante',1,'Acordar cedo e começar o dia a dois.'],
+  ['Rodízio de comida japonesa','restaurante',3,'Para quem ama sushi e não sabe parar.'],
+  ['Jantar em restaurante de culinária que nunca provaram','restaurante',2,'Tailandesa, etíope, peruana… sorteiem uma.'],
+  ['Brunch de domingo','restaurante',2,'Sem pressa e com muita comida boa.'],
+  ['Bar de vinhos','restaurante',3,'Uma taça, uma tábua e uma boa conversa.'],
+  ['Tour de cafeterias da cidade','restaurante',1,'Três cafés em uma tarde e um favorito no fim.'],
+  ['Hamburgueria artesanal','restaurante',2,'Escolham o hambúrguer mais diferente do cardápio.'],
+  ['Pizzaria com forno a lenha','restaurante',2,'Uma pizza meio a meio para dividir.'],
+  ['Fim de semana em cidade pequena','viagem',3,'Sem roteiro fechado, só para desacelerar.'],
+  ['Pousada com café da manhã incluso','viagem',3,'Dormir fora e acordar com mesa posta.'],
+  ['Viagem de trem ou ônibus panorâmico','viagem',2,'A viagem também é o passeio.'],
+  ['Conhecer uma cidade vizinha de carro','batevolta',2,'Ir de manhã, voltar à noite, parar onde der vontade.'],
+  ['Cachoeira ou trilha curta perto da cidade','batevolta',1,'Levem lanche e roupa para molhar.'],
+  ['Vinícola ou cervejaria artesanal','batevolta',3,'Degustação e passeio em um dia só.'],
+  ['Parque de diversões','experiencia',2,'Voltar a ser criança por uma tarde.'],
+  ['Boliche','experiencia',2,'Perdedor paga a rodada.'],
+  ['Escape room','experiencia',2,'Cooperar para sair, sem brigar pela pista.'],
+  ['Parque aquático','experiencia',2,'Escorregar e rir até cansar.'],
+  ['Show ou festival ao ar livre','cultura',3,'Escolham uma banda que nenhum dos dois conhece.'],
+  ['Peça de teatro','cultura',2,'Depois do espetáculo, discutir o final.'],
+  ['Stand-up comedy','cultura',2,'Rir junto é um bom primeiro passo.'],
+  ['Sessão de cinema em sala diferente','cultura',2,'IMAX, 4D ou cinema de rua.'],
+  ['Exposição em museu ou centro cultural','cultura',1,'Cada um escolhe a obra favorita e explica por quê.'],
+  ['Show de música ao vivo em casa de shows','cultura',3,'Dançar junto vale mais que assistir parado.'],
+  ['Visitar uma livraria e trocar livros de presente','cultura',1,'Cada um escolhe um livro para o outro.'],
+  ['Passeio de caiaque ou stand-up paddle','aventura',2,'Remar no mesmo ritmo.'],
+  ['Tirolesa ou arvorismo','aventura',3,'Um desafio leve para fazer juntos.'],
+  ['Aula de escalada indoor','aventura',2,'Um segura a corda e o outro sobe.'],
+  ['Andar de bicicleta em ciclovia nova','aventura',1,'Levar uma garrafa de água e um lanche.'],
+  ['Nascer do sol em um mirante','arlivre',1,'Acordar cedo vale a vista.'],
+  ['Piquenique com cesta e manta','arlivre',1,'Cada um leva um item surpresa.'],
+  ['Observar estrelas','arlivre',1,'Sair da cidade, deitar e escolher uma constelação.'],
+  ['Passeio em jardim botânico','arlivre',1,'Fotos, flores e uma caminhada sem pressa.'],
+  ['Feira de produtores aos sábados','arlivre',1,'Comprar o que for comer no almoço.'],
+  ['Noite de jogos de videogame','casa',1,'Perdedor escolhe o jantar.'],
+  ['Jantar temático em casa','casa',2,'Escolham um país e cozinhem juntos.'],
+  ['Noite de filmes de um mesmo diretor','casa',1,'Pipoca, cobertor e três filmes seguidos.'],
+  ['Montar um quebra-cabeça juntos','casa',1,'Mil peças e uma playlist.'],
+  ['Fondue em casa','casa',2,'Queijo, chocolate e muito palito.'],
+  ['Aula de culinária','criativo',2,'Cozinhar juntos e comer o resultado.'],
+  ['Pintar uma tela juntos','criativo',1,'Sem talento, só diversão.'],
+  ['Oficina de cerâmica','criativo',2,'Fazer uma caneca um para o outro.'],
+  ['Álbum de fotos ou scrapbook do casal','criativo',1,'Imprimir fotos e escrever legendas.'],
+  ['Escrever uma música ou poema juntos','criativo',1,'Pode ficar ruim e ser perfeito.'],
+  ['Aula de dança a dois','criativo',2,'Salsa, forró ou samba de gafieira.'],
+];
+let sugSeed = Math.floor(Date.now()/864e5);
+function sugShuffle(arr, seed){ const a = arr.slice(); let x = seed % 2147483647 || 1; const rnd = ()=> (x = x*48271 % 2147483647) / 2147483647; for(let i=a.length-1;i>0;i--){ const j = Math.floor(rnd()*(i+1)); [a[i],a[j]] = [a[j],a[i]]; } return a; }
+function renderSugestoes(){
+  const box = $g('sugBox'); if(!box) return;
+  const filtrando = ideiasStatus==='feitas' || ($g('searchIdeias').value||'').trim() || $g('filterCategoria').value || $g('filterCidade').value || filtroFavoritosAtivo;
+  if(filtrando){ box.innerHTML=''; return; }
+  if(!planInfo().pro){
+    box.innerHTML = `<button class="sug-lock" onclick="openPlano('sugestoes')"><span>✨ Sugestões de ideias<small>Ideias prontas para adicionar com um toque</small></span><span class="sug-pill">Pro</span></button>`;
+    return;
+  }
+  const have = new Set(state.places.map(p=>(p.name||'').trim().toLowerCase()));
+  const pool = SUGESTOES.map((x,i)=>({x,i})).filter(o=>!have.has(o.x[0].toLowerCase()));
+  if(!pool.length){ box.innerHTML=''; return; }
+  const cats = new Set(state.categories.map(c=>c.key));
+  const show = sugShuffle(pool, sugSeed).slice(0,8);
+  box.innerHTML = `<div class="sug-box"><div class="sug-h"><b>✨ Sugestões para vocês</b><button onclick="sugSeed=Date.now()%2147483647; renderSugestoes()">Ver outras ↻</button></div><div class="sug-row">` +
+    show.map(o=>{ const [name,cat,,tip]=o.x; const k = cats.has(cat)?cat:(state.categories[0]?state.categories[0].key:'restaurante'); const c = catInfo(k);
+      return `<div class="sug-card" style="--cat-color:${c.hex}"><div class="sug-top"><span class="sug-ic">${catIcon(k,20)}</span><span class="sug-cat">${escapeHtml(c.label)}</span></div><div class="sug-name">${escapeHtml(name)}</div><div class="sug-tip">${escapeHtml(tip)}</div><button class="sug-add" onclick="addSugestao(${o.i})">+ Adicionar</button></div>`; }).join('') + `</div></div>`;
+}
+async function addSugestao(i){
+  const x = SUGESTOES[i]; if(!x) return;
+  if(!planInfo().pro){ openPlano('sugestoes'); return; }
+  if(!canAddPlace()){ openPlano('ideias'); return; }
+  if(docTooBig()){ alert('O espaço de ideias de vocês está quase cheio.'); return; }
+  if(state.places.some(p=>(p.name||'').trim().toLowerCase()===x[0].toLowerCase())) return;
+  const cats = new Set(state.categories.map(c=>c.key));
+  const k = cats.has(x[1]) ? x[1] : (state.categories[0] ? state.categories[0].key : 'restaurante');
+  state.places.push({ id:uid(), name:x[0], category:k, city:'', price:String(x[2]), address:'', link:'', photo:'', notes:x[3], addedBy:'', createdAt:todayStr() });
+  await saveState();
+  populateFilters(); renderPlaces(); renderCounter(); renderPlanMenu();
 }
 
 let calChooserId = null;
