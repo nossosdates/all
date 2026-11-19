@@ -305,6 +305,21 @@ body{ padding-bottom:calc(130px + env(safe-area-inset-bottom, 0px)); }
 .grp-h b{ font-size:13px; font-weight:800; letter-spacing:.05em; text-transform:uppercase; }
 .grp-h i{ font-style:normal; font-size:12px; font-weight:700; color:var(--text-dim); background:var(--surface); border-radius:999px; padding:2px 9px; margin-left:auto; box-shadow:var(--shadow-card); }
 .grp-ic{ width:26px; height:26px; border-radius:9px; display:flex; align-items:center; justify-content:center; color:#fff; background:var(--cat-color); }
+/* Seleção de ideias */
+.ideias-head .screen-title{ margin-right:auto; }
+.ideias-sel{ background:none; color:var(--gold); font-weight:700; font-size:14px; font-family:inherit; padding:8px 6px; flex:none; }
+.place-card{ -webkit-touch-callout:none; -webkit-user-select:none; user-select:none; }
+.place-card.sel{ background:color-mix(in srgb, var(--gold) 9%, var(--surface)); box-shadow:0 0 0 2.5px var(--gold); }
+.pc-check{ flex:none; width:30px; height:30px; border-radius:50%; border:2px solid color-mix(in srgb, var(--text-dim) 55%, transparent); display:flex; align-items:center; justify-content:center; margin-right:4px; color:transparent; }
+.place-card.sel .pc-check{ background:var(--gold); border-color:var(--gold); color:#fff; }
+.sel-bar{ position:fixed; left:0; right:0; top:0; z-index:60; display:flex; align-items:center; gap:10px; padding:calc(env(safe-area-inset-top,0px) + 12px) 14px 12px; background:var(--surface); box-shadow:0 6px 24px rgba(0,0,0,.18); }
+.sel-cancel{ background:none; color:var(--text-dim); font-weight:700; font-size:15px; font-family:inherit; padding:10px 6px; flex:none; }
+.sel-info{ flex:1; text-align:center; font-size:14px; font-weight:700; color:var(--text); line-height:1.2; }
+.sel-info b{ font-size:20px; }
+.sel-info button{ display:block; margin:2px auto 0; background:none; color:var(--gold); font-size:12.5px; font-weight:700; font-family:inherit; }
+.sel-del{ flex:none; background:#D9453A; color:#fff; font-weight:800; font-size:16px; font-family:inherit; padding:15px 22px; border-radius:999px; box-shadow:0 8px 18px rgba(217,69,58,.35); }
+.sel-del:disabled{ opacity:.4; box-shadow:none; }
+
 /* Sugestões (Pro) */
 .sug-box{ margin:2px 0 14px; }
 .sug-toggle{ width:100%; display:flex; align-items:center; justify-content:space-between; background:var(--surface); color:var(--text); font-size:13.5px; font-weight:800; font-family:inherit; padding:10px 14px; border-radius:999px; box-shadow:var(--shadow-card); margin-bottom:8px; }
@@ -903,6 +918,7 @@ input[type=checkbox]{ accent-color: var(--gold); }
 <div class="screen" id="screen-ideias" style="display:none">
   <div class="ideias-head">
     <h1 class="screen-title">Ideias</h1>
+    <button class="ideias-sel" onclick="startSel()">Selecionar</button>
     <button class="add-fab" onclick="requireAuth(openPlaceForm)">+ Ideia</button>
   </div>
   <div class="ideias-searchrow">
@@ -932,6 +948,13 @@ input[type=checkbox]{ accent-color: var(--gold); }
   </div>
   <div id="sugBox"></div>
   <div id="placesList"></div>
+</div>
+
+<!-- Barra de seleção (excluir várias ideias) -->
+<div class="sel-bar" id="selBar" style="display:none">
+  <button class="sel-cancel" onclick="exitSel()">Cancelar</button>
+  <div class="sel-info"><b id="selCount">0</b> <span id="selTxt">selecionadas</span><button onclick="selAll()">Todas</button></div>
+  <button class="sel-del" id="selDel" onclick="delSelected()">Excluir</button>
 </div>
 
 <!-- SCREEN: AGENDA -->
@@ -1619,6 +1642,7 @@ async function saveState(){
 }
 
 function setScreen(name){
+  if(selMode) exitSel();
   if(catEditMode && name!=='inicio') finishCatEdit();
   document.querySelectorAll('.nav-btn').forEach(t=>t.classList.toggle('active', t.dataset.screen===name));
   ['inicio','ideias','agenda','favoritos'].forEach(n=>{
@@ -1954,7 +1978,8 @@ function placeCardHtml(p){
   bits.push(priceHtml);
   if(feitos) bits.push(`<span class="pc-done">✓ Feito ${feitos}x</span>`);
   if(p.addedBy) bits.push(`<span style="color:var(--gold);font-weight:600">${escapeHtml(p.addedBy)}</span>`);
-  return `<div class="place-card" style="--cat-color:${c.hex}" onclick="openPlaceDetail('${p.id}')">
+  const selOn = selMode && selIds.has(p.id);
+  return `<div class="place-card${selOn?' sel':''}" data-id="${p.id}" style="--cat-color:${c.hex}" onclick="placeTap('${p.id}')">
       <div class="pc-thumb">${thumb}</div>
       <div class="pc-body">
         <div class="pc-cat">${escapeHtml(c.label)}</div>
@@ -1962,7 +1987,7 @@ function placeCardHtml(p){
         <div class="pc-meta">${bits.join('')}</div>
         ${p.notes? `<div class="pc-notes">${escapeHtml(p.notes)}</div>`:''}
       </div>
-      <button class="pc-fav" title="${p.favorite?'Desfavoritar':'Favoritar'}" onclick="event.stopPropagation(); requireAuth(()=>toggleFavorite('${p.id}'))">${ICON_HEART_FAV(!!p.favorite)}</button>
+      ${selMode ? `<span class="pc-check"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span>` : `<button class="pc-fav" title="${p.favorite?'Desfavoritar':'Favoritar'}" onclick="event.stopPropagation(); requireAuth(()=>toggleFavorite('${p.id}'))">${ICON_HEART_FAV(!!p.favorite)}</button>`}
     </div>`;
 }
 function renderPlaces(){
@@ -3670,6 +3695,60 @@ async function addSugestao(i){
   await saveState();
   populateFilters(); renderPlaces(); renderCounter(); renderPlanMenu();
 }
+
+
+/* ---------- SELECIONAR E EXCLUIR VÁRIAS IDEIAS ---------- */
+let selMode = false, selIds = new Set(), selSuppressUntil = 0;
+function placeTap(id){
+  if(Date.now() < selSuppressUntil) return;
+  if(selMode){ toggleSel(id); return; }
+  openPlaceDetail(id);
+}
+function updateSelBar(){
+  const n = selIds.size;
+  $g('selBar').style.display = selMode ? 'flex' : 'none';
+  $g('selCount').textContent = n;
+  $g('selTxt').textContent = n===1 ? 'selecionada' : 'selecionadas';
+  $g('selDel').disabled = n===0;
+}
+function startSel(id){ selMode = true; selIds = new Set(id?[id]:[]); updateSelBar(); renderPlaces(); }
+function exitSel(){ if(!selMode) return; selMode = false; selIds = new Set(); updateSelBar(); renderPlaces(); renderFavoritos(); }
+function toggleSel(id){ if(selIds.has(id)) selIds.delete(id); else selIds.add(id); updateSelBar(); renderPlaces(); }
+function selAll(){
+  const ids = [...document.querySelectorAll('#placesList .place-card')].map(e=>e.dataset.id);
+  const todos = ids.length && ids.every(i=>selIds.has(i));
+  ids.forEach(i=> todos ? selIds.delete(i) : selIds.add(i));
+  updateSelBar(); renderPlaces();
+}
+async function delSelected(){
+  const ids = new Set(selIds); if(!ids.size) return;
+  const ev = state.events.filter(e=>ids.has(e.placeId)).length;
+  const msg = `Excluir ${ids.size} ${ids.size===1?'ideia':'ideias'}?` + (ev ? `\n\n${ev===1?'1 date ligado':ev+' dates ligados'} a ${ids.size===1?'ela':'elas'} também ${ev===1?'sai':'saem'} da agenda.` : '');
+  if(!confirm(msg)) return;
+  state.places = state.places.filter(p=>!ids.has(p.id));
+  state.events = state.events.filter(e=>!ids.has(e.placeId));
+  selMode = false; selIds = new Set(); updateSelBar();
+  await saveState();
+  populateFilters(); renderPlaces(); renderCalendar(); renderTimeline(); renderCounter(); renderWeekStrip(); renderProximo();
+}
+/* segurar um cartão (0,55 s) entra no modo de seleção, igual ao iPhone */
+(function(){
+  const list = document.getElementById('placesList'); if(!list) return;
+  let timer = null, sx = 0, sy = 0, cardId = null, fired = false;
+  const cancel = ()=>{ if(timer){ clearTimeout(timer); timer = null; } };
+  list.addEventListener('pointerdown', e=>{
+    const card = e.target.closest('.place-card'); if(!card || e.target.closest('.pc-fav')) return;
+    cardId = card.dataset.id; sx = e.clientX; sy = e.clientY; cancel();
+    timer = setTimeout(()=>{
+      timer = null; fired = true; selSuppressUntil = Date.now() + 5000;
+      if(navigator.vibrate) try{ navigator.vibrate(15); }catch(_){}
+      if(!selMode) startSel(cardId); else toggleSel(cardId);
+    }, 550);
+  });
+  list.addEventListener('pointermove', e=>{ if(timer && Math.hypot(e.clientX-sx, e.clientY-sy) > 8) cancel(); });
+  ['pointerup','pointercancel','pointerleave'].forEach(t=>list.addEventListener(t, ()=>{ cancel(); if(fired){ fired = false; selSuppressUntil = Date.now() + 350; } }));
+  list.addEventListener('contextmenu', e=>{ if(e.target.closest('.place-card')) e.preventDefault(); });
+})();
 
 let calChooserId = null;
 function openCalChooser(id){ calChooserId = id; openOverlayEl('overlayCal'); }
