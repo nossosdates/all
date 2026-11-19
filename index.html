@@ -300,8 +300,16 @@ body{ padding-bottom:calc(130px + env(safe-area-inset-bottom, 0px)); }
   border-radius: 20px; padding: 7px 12px; font-size: 12.5px;
 }
 
+.grp-h{ display:flex; align-items:center; gap:8px; margin:16px 4px 8px; color:var(--cat-color); }
+.grp-h:first-child{ margin-top:4px; }
+.grp-h b{ font-size:13px; font-weight:800; letter-spacing:.05em; text-transform:uppercase; }
+.grp-h i{ font-style:normal; font-size:12px; font-weight:700; color:var(--text-dim); background:var(--surface); border-radius:999px; padding:2px 9px; margin-left:auto; box-shadow:var(--shadow-card); }
+.grp-ic{ width:26px; height:26px; border-radius:9px; display:flex; align-items:center; justify-content:center; color:#fff; background:var(--cat-color); }
 /* Sugestões (Pro) */
 .sug-box{ margin:2px 0 14px; }
+.sug-toggle{ width:100%; display:flex; align-items:center; justify-content:space-between; background:var(--surface); color:var(--text); font-size:13.5px; font-weight:800; font-family:inherit; padding:10px 14px; border-radius:999px; box-shadow:var(--shadow-card); margin-bottom:8px; }
+.sug-more{ display:flex; justify-content:flex-end; margin:0 4px 6px; }
+.sug-more button{ background:none; color:var(--gold); font-size:12.5px; font-weight:700; font-family:inherit; }
 .sug-h{ display:flex; align-items:center; justify-content:space-between; margin:0 2px 8px; }
 .sug-h b{ font-size:14px; font-weight:800; color:var(--text); }
 .sug-h button{ background:none; color:var(--gold); font-size:12.5px; font-weight:700; font-family:inherit; padding:4px 2px; }
@@ -332,7 +340,7 @@ body{ padding-bottom:calc(130px + env(safe-area-inset-bottom, 0px)); }
 .ideias-seg button.on{ background:var(--gold); color:#FFF7F2; }
 .ideias-chips{ display:flex; gap:6px; overflow-x:auto; padding:2px 2px 8px; margin:0 -2px 8px; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
 .ideias-chips::-webkit-scrollbar{ display:none; }
-.ideias-chips select{ flex:none; background:var(--surface); border:1.5px solid transparent; color:var(--text); border-radius:999px; padding:8px 12px; font-size:13px; font-weight:600; font-family:inherit; box-shadow:var(--shadow-card); max-width:60vw; }
+.ideias-chips select{ flex:1 1 0; min-width:0; text-overflow:ellipsis; padding-left:12px; padding-right:6px; background:var(--surface); border:1.5px solid transparent; color:var(--text); border-radius:999px; padding:8px 12px; font-size:13px; font-weight:600; font-family:inherit; box-shadow:var(--shadow-card); }
 .ideias-chips select.active{ border-color:var(--gold); color:var(--gold); }
 .pc-done{ color:var(--gold); font-weight:700; }
 .add-fab{
@@ -909,10 +917,17 @@ input[type=checkbox]{ accent-color: var(--gold); }
   <div class="ideias-chips">
     <select id="filterCategoria" onchange="renderPlaces()"></select>
     <select id="filterCidade" onchange="renderPlaces()"></select>
-    <select id="ordenarPor" onchange="renderPlaces()">
-      <option value="nome">A–Z</option>
-      <option value="recente">Recentes</option>
-      <option value="visitado">Mais feitas</option>
+    <select id="ordenarPor" onchange="renderPlaces()" aria-label="Organizar">
+      <optgroup label="Ordenar por">
+        <option value="ordem">Adicionadas</option>
+        <option value="recente">Mais recentes</option>
+        <option value="nome">A–Z</option>
+        <option value="visitado">Mais feitas</option>
+      </optgroup>
+      <optgroup label="Agrupar por">
+        <option value="categoria">Categorias</option>
+        <option value="cidade">Cidades</option>
+      </optgroup>
     </select>
   </div>
   <div id="sugBox"></div>
@@ -1971,10 +1986,26 @@ function renderPlaces(){
     container.innerHTML = emptyState(searchF? "search":"bulb", vazio);
   } else {
     const visitCount = feitoCount;
-    if(ordenar==='recente') list.sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||''));
-    else if(ordenar==='visitado') list.sort((a,b)=>visitCount(b.id)-visitCount(a.id));
-    else list.sort((a,b)=>a.name.localeCompare(b.name));
-    container.innerHTML = list.map(placeCardHtml).join('');
+    const pos = new Map(state.places.map((p,i)=>[p.id,i]));        /* posição = ordem em que foram adicionadas */
+    const porOrdem = (a,b)=>pos.get(a.id)-pos.get(b.id);
+    if(ordenar==='recente') list.sort((a,b)=>porOrdem(b,a));
+    else if(ordenar==='visitado') list.sort((a,b)=>(visitCount(b.id)-visitCount(a.id)) || porOrdem(a,b));
+    else if(ordenar==='nome') list.sort((a,b)=>a.name.localeCompare(b.name,'pt-BR'));
+    else list.sort(porOrdem);
+    if(ordenar==='categoria' || ordenar==='cidade'){
+      const groups = new Map();
+      if(ordenar==='categoria'){ state.categories.forEach(c=>groups.set(c.key,[])); }
+      list.forEach(p=>{ const k = ordenar==='categoria' ? (groups.has(p.category)?p.category:'__outras') : (p.city||'').trim(); if(!groups.has(k)) groups.set(k,[]); groups.get(k).push(p); });
+      let keys = [...groups.keys()].filter(k=>groups.get(k).length);
+      if(ordenar==='cidade') keys.sort((a,b)=> a===''?1 : b===''?-1 : a.localeCompare(b,'pt-BR'));
+      container.innerHTML = keys.map(k=>{
+        const arr = groups.get(k);
+        let head;
+        if(ordenar==='categoria' && k!=='__outras'){ const c = catInfo(k); head = `<div class="grp-h" style="--cat-color:${c.hex}"><span class="grp-ic">${catIcon(k,18)}</span><b>${escapeHtml(c.label)}</b><i>${arr.length}</i></div>`; }
+        else head = `<div class="grp-h" style="--cat-color:var(--gold)"><b>${escapeHtml(k==='__outras'?'Outras':(k||'Sem cidade'))}</b><i>${arr.length}</i></div>`;
+        return head + arr.map(placeCardHtml).join('');
+      }).join('');
+    } else container.innerHTML = list.map(placeCardHtml).join('');
   }
   renderFavoritos();
   if(typeof renderSugestoes==='function') renderSugestoes();
@@ -3604,6 +3635,8 @@ const SUGESTOES = [
   ['Aula de dança a dois','criativo',2,'Salsa, forró ou samba de gafieira.'],
 ];
 let sugSeed = Math.floor(Date.now()/864e5);
+let sugOpen = false;
+function toggleSug(){ sugOpen = !sugOpen; renderSugestoes(); }
 function sugShuffle(arr, seed){ const a = arr.slice(); let x = seed % 2147483647 || 1; const rnd = ()=> (x = x*48271 % 2147483647) / 2147483647; for(let i=a.length-1;i>0;i--){ const j = Math.floor(rnd()*(i+1)); [a[i],a[j]] = [a[j],a[i]]; } return a; }
 function renderSugestoes(){
   const box = $g('sugBox'); if(!box) return;
@@ -3618,7 +3651,10 @@ function renderSugestoes(){
   if(!pool.length){ box.innerHTML=''; return; }
   const cats = new Set(state.categories.map(c=>c.key));
   const show = sugShuffle(pool, sugSeed).slice(0,8);
-  box.innerHTML = `<div class="sug-box"><div class="sug-h"><b>✨ Sugestões para vocês</b><button onclick="sugSeed=Date.now()%2147483647; renderSugestoes()">Ver outras ↻</button></div><div class="sug-row">` +
+  const chev = `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="transition:transform .2s;transform:rotate(${sugOpen?180:0}deg)"><path d="m6 9 6 6 6-6"/></svg>`;
+  const head = `<button class="sug-toggle" onclick="toggleSug()" aria-expanded="${sugOpen}"><span>✨ Sugestões para vocês</span>${chev}</button>`;
+  if(!sugOpen){ box.innerHTML = `<div class="sug-box">${head}</div>`; return; }
+  box.innerHTML = `<div class="sug-box">${head}<div class="sug-more"><button onclick="sugSeed=Date.now()%2147483647; renderSugestoes()">Ver outras ↻</button></div><div class="sug-row">` +
     show.map(o=>{ const [name,cat,,tip]=o.x; const k = cats.has(cat)?cat:(state.categories[0]?state.categories[0].key:'restaurante'); const c = catInfo(k);
       return `<div class="sug-card" style="--cat-color:${c.hex}"><div class="sug-top"><span class="sug-ic">${catIcon(k,20)}</span><span class="sug-cat">${escapeHtml(c.label)}</span></div><div class="sug-name">${escapeHtml(name)}</div><div class="sug-tip">${escapeHtml(tip)}</div><button class="sug-add" onclick="addSugestao(${o.i})">+ Adicionar</button></div>`; }).join('') + `</div></div>`;
 }
