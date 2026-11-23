@@ -9,7 +9,7 @@
 <pre id="log">Aguardando…</pre>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+import { getFirestore, doc, getDoc, getDocFromServer, setDoc } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 const OLD={apiKey:"AIzaSyC8SdTZEi5TcJNEnrX16YAfb9kCf329yT4",authDomain:"bruno-e-beatriz-dates.firebaseapp.com",projectId:"bruno-e-beatriz-dates",appId:"1:512656464234:web:302840fa38009596226d13"};
 const NEW={apiKey:"AIzaSyC9QOjVvGRAh1ZIZpir8GxdNP_UBi7m9i4",authDomain:"nossosdates-app.firebaseapp.com",projectId:"nossosdates-app",appId:"1:157852870199:web:36273ec8a73ca8a3f7c1b2"};
@@ -31,7 +31,11 @@ $('b3').onclick=async()=>{ try{
   const ref=doc(dN,'casal','state'); const ja=await getDoc(ref);
   if(ja.exists() && !confirm('Já existe casal/state no NOVO. Sobrescrever?')) return;
   await setDoc(ref,dados['casal/state']);
-  const v=await getDoc(ref); log('Copiado. Conferência: '+(v.exists()&&JSON.stringify(v.data())===JSON.stringify(dados['casal/state'])?'IGUAL ✅':'DIFERENTE ⚠️'));
+  const v=await getDocFromServer(ref);
+  const canon=x=>{ if(x&&typeof x.toMillis==='function') return 'TS:'+x.toMillis(); if(Array.isArray(x)) return x.map(canon); if(x&&typeof x==='object'){ const o={}; Object.keys(x).sort().forEach(k=>{ if(x[k]!==undefined) o[k]=canon(x[k]); }); return o; } return x; };
+  const a=JSON.stringify(canon(dados['casal/state'])), b=v.exists()?JSON.stringify(canon(v.data())):'';
+  const ka=Object.keys(dados['casal/state']).sort().join(','), kb=v.exists()?Object.keys(v.data()).sort().join(','):'';
+  log('Copiado. Conferência: '+(a===b?'IGUAL ✅':'DIFERENTE ⚠️')+' | campos: '+kb+' | tamanho '+a.length+' vs '+b.length);
  }catch(e){ log('ERRO: '+(e.code||'')+' '+e.message); } };
 $('b4').onclick=()=>{ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(dados,null,1)],{type:'application/json'})); a.download='backup-nossos-dates.json'; a.click(); };
 </script></body></html>
