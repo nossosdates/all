@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Nossos Dates</title>
 <meta name="description" content="Planejem, guardem e lembrem dos dates do casal.">
 <meta property="og:type" content="website">
@@ -54,7 +54,7 @@
   --radius-l: 22px;
 }
 
-*{box-sizing:border-box;margin:0;padding:0;touch-action:manipulation;}   /* sem zoom por toque duplo (o pinch continua funcionando) */
+*{box-sizing:border-box;margin:0;padding:0;touch-action:pan-x pan-y;}   /* só rolagem: sem zoom por toque duplo nem por pinça */
 body{
   background: radial-gradient(ellipse at top, #FBF8F7 0%, #F5E9ED 60%);
   color: var(--text);
@@ -1666,7 +1666,11 @@ input[type=checkbox]{ accent-color: var(--gold); }
 </script>
 
 <script>
-const ICON_SHARE = `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="vertical-align:-2px"><circle cx="6" cy="12" r="2.4" fill="var(--gold)" stroke="none"/><circle cx="18" cy="5.5" r="2.4" fill="var(--gold)" stroke="none"/><circle cx="18" cy="18.5" r="2.4" fill="var(--gold)" stroke="none"/><path d="M8.2 10.8 15.8 6.7M8.2 13.2l7.6 4.1"/></svg>`;
+/* Sem zoom no app. O iPhone ignora o user-scalable=no, então a pinça é bloqueada aqui também. */
+['gesturestart','gesturechange','gestureend'].forEach(t=>document.addEventListener(t, e=>e.preventDefault(), {passive:false}));
+document.addEventListener('touchmove', e=>{ if(e.touches && e.touches.length > 1) e.preventDefault(); }, {passive:false});
+
+const ICON_SHARE =`<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="vertical-align:-2px"><circle cx="6" cy="12" r="2.4" fill="var(--gold)" stroke="none"/><circle cx="18" cy="5.5" r="2.4" fill="var(--gold)" stroke="none"/><circle cx="18" cy="18.5" r="2.4" fill="var(--gold)" stroke="none"/><path d="M8.2 10.8 15.8 6.7M8.2 13.2l7.6 4.1"/></svg>`;
 const DEFAULT_CATEGORIES = [
   {key:'restaurante', label:'Restaurante', hex:'#E5484D'},
   {key:'viagem', label:'Viagem', hex:'#0EA5A0'},
