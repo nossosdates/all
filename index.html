@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Nossos Dates</title>
+<link rel="canonical" href="https://nossosdates.com.br/">
 <meta name="description" content="Planejem, guardem e lembrem dos dates do casal.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Nossos Dates">
@@ -37,7 +38,7 @@
   --text: #2B2325;
   --text-dim: #5F5155;
   --text-faint: #7B6E72;
-  --gold: #D9356F;
+  --gold: #CF2C66;
   --gold-soft: #F3DDE6;
   --indigo: #5B63E8;
   --indigo-soft: #ECEDFC;
@@ -963,7 +964,7 @@ input[type=checkbox]{ accent-color: var(--gold); }
     <button data-m="surp" onclick="setIdeiasMode('surp')"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:5px"><rect x="3.5" y="9" width="17" height="11.5" rx="2.4"/><path d="M12 9v11.5"/><path d="M12 9C9.5 9 7.4 8 7.4 6.3 7.4 4.9 8.6 4.2 9.8 4.5 11 4.8 12 7 12 9Zm0 0c2.5 0 4.6-1 4.6-2.7 0-1.4-1.2-2.1-2.4-1.8C13 4.8 12 7 12 9Z"/></svg>Minhas surpresas</button>
   </div>
   <div class="ideias-searchrow">
-    <input type="text" id="searchIdeias" class="search-input ideias-search" placeholder="Buscar ideias..." oninput="renderPlaces()">
+    <input type="text" id="searchIdeias" aria-label="Buscar ideias" class="search-input ideias-search" placeholder="Buscar ideias..." oninput="renderPlaces()">
     <button class="chip-fav" id="filtroFavoritosBtn" aria-label="Só favoritas" onclick="toggleFiltroFavoritos()"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M12 20.3s-7.3-4.5-9.7-9C.7 7.8 2.1 4.5 5.3 3.5a5.5 5.5 0 0 1 6.7 2.4A5.5 5.5 0 0 1 18.7 3.5c3.2 1 4.6 4.3 3 7.8-2.4 4.5-9.7 9-9.7 9Z"/></svg></button>
   </div>
   <div class="ideias-seg" id="ideiasSeg">
@@ -972,8 +973,8 @@ input[type=checkbox]{ accent-color: var(--gold); }
     <button data-s="feitas" onclick="setIdeiasStatus('feitas')">Já fizemos <i></i></button>
   </div>
   <div class="ideias-chips">
-    <select id="filterCategoria" onchange="renderPlaces()"></select>
-    <select id="filterCidade" onchange="renderPlaces()"></select>
+    <select id="filterCategoria" aria-label="Filtrar por categoria" onchange="renderPlaces()"></select>
+    <select id="filterCidade" aria-label="Filtrar por cidade" onchange="renderPlaces()"></select>
     <select id="ordenarPor" onchange="renderPlaces()" aria-label="Organizar">
       <optgroup label="Ordenar por">
         <option value="ordem">Adicionadas</option>
@@ -1107,15 +1108,15 @@ input[type=checkbox]{ accent-color: var(--gold); }
       </div>
     </div>
     <div class="field" id="fWeddingF" style="display:none">
-      <label>Data do casamento</label>
+      <label for="fWeddingDate">Data do casamento</label>
       <input type="date" id="fWeddingDate">
     </div>
     <div class="field" id="fStartF">
-      <label id="fStartLbl">Namorando desde (quando pediu em namoro)</label>
+      <label id="fStartLbl" for="fStartDate">Namorando desde (quando pediu em namoro)</label>
       <input type="date" id="fStartDate">
     </div>
     <div class="field">
-      <label id="fFirstLbl">Primeiro date (opcional)</label>
+      <label id="fFirstLbl" for="fFirstDate">Primeiro date (opcional)</label>
       <input type="date" id="fFirstDate">
       <label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-weight:500;cursor:pointer"><input type="checkbox" id="fFirstUnknown" onchange="syncFirstUnknown('f')" style="width:16px;height:16px"> Não lembro do primeiro date</label>
     </div>
@@ -1132,7 +1133,7 @@ input[type=checkbox]{ accent-color: var(--gold); }
     <div class="sheet-handle"></div>
     <h2>Clima</h2>
     <div class="filter-bar" style="margin-bottom:16px">
-      <input type="text" id="climaCidadeInput" placeholder="Buscar cidade..." value="Curitiba" style="flex:1">
+      <input type="text" id="climaCidadeInput" aria-label="Cidade para a previsão do tempo" placeholder="Buscar cidade..." value="Curitiba" style="flex:1">
       <button class="add-fab" onclick="buscarClima()">Buscar</button>
     </div>
     <div id="climaContent"></div>
@@ -1146,7 +1147,7 @@ input[type=checkbox]{ accent-color: var(--gold); }
     <div class="sheet-handle"></div>
     <h2 id="placeFormTitle">Nova ideia</h2>
     <div class="field">
-      <label>Nome</label>
+      <label for="fName">Nome</label>
       <input type="text" id="fName" placeholder="Ex: Madero, Trilha do Marumbi...">
     </div>
     <div class="field">
@@ -1159,11 +1160,11 @@ input[type=checkbox]{ accent-color: var(--gold); }
     </div>
     <div class="field-row">
       <div class="field">
-        <label>Cidade</label>
+        <label for="fCidade">Cidade</label>
         <input type="text" id="fCidade" placeholder="Curitiba">
       </div>
       <div class="field">
-        <label>Preço</label>
+        <label for="fPreco">Preço</label>
         <select id="fPreco">
           <option value="1">$</option>
           <option value="2">$$</option>
@@ -1172,19 +1173,19 @@ input[type=checkbox]{ accent-color: var(--gold); }
       </div>
     </div>
     <div class="field">
-      <label>Endereço (opcional)</label>
+      <label for="fEndereco">Endereço (opcional)</label>
       <input type="text" id="fEndereco" placeholder="Rua, bairro...">
     </div>
     <div class="field">
-      <label>Link (opcional)</label>
+      <label for="fLink">Link (opcional)</label>
       <input type="text" id="fLink" placeholder="Site, Instagram...">
     </div>
     <div class="field">
-      <label>Foto (link da imagem, opcional)</label>
+      <label for="fPhoto">Foto (link da imagem, opcional)</label>
       <input type="text" id="fPhoto" placeholder="Cole o link de uma foto...">
     </div>
     <div class="field">
-      <label>Observações</label>
+      <label for="fNotes">Observações</label>
       <textarea id="fNotes" placeholder="Detalhes, dicas, o que levar, quando reservar..."></textarea>
     </div>
     <div class="sheet-actions">
@@ -1210,7 +1211,7 @@ input[type=checkbox]{ accent-color: var(--gold); }
       <div class="chip-row" id="sCategoriaChips"></div>
     </div>
     <div class="field">
-      <label>Cidade</label>
+      <label for="sCidade">Cidade</label>
       <input type="text" id="sCidade" placeholder="Deixe em branco para qualquer cidade">
     </div>
     <div class="field">
@@ -1244,14 +1245,14 @@ input[type=checkbox]{ accent-color: var(--gold); }
     <div id="existingEventsForDay" style="margin-bottom:10px"></div>
     <h2 id="eventFormLabel" style="font-size:15px; margin-bottom:10px">Marcar novo date</h2>
     <div class="field">
-      <label>Lugar</label>
+      <label for="ePlaceSearch">Lugar</label>
       <input type="text" id="ePlaceSearch" class="search-input" placeholder="Buscar ideia pelo nome..." oninput="renderEventPlaceList()">
       <button type="button" class="btn btn-ghost" style="width:100%; justify-content:flex-start; margin-top:6px; color:var(--gold); font-weight:600" onclick="requireAuth(openNovaIdeiaFromEvent)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:4px"><path d="M12 5v14M5 12h14"/></svg> Cadastrar nova ideia</button>
       <div class="place-picker-list" id="eSelectPlaceList" style="margin-top:6px"></div>
       <input type="hidden" id="eSelectPlace">
     </div>
     <div class="field">
-      <label>Observação (opcional)</label>
+      <label for="eNote">Observação (opcional)</label>
       <textarea id="eNote" placeholder="Como foi, o que rolou..."></textarea>
     </div>
     <div class="field" id="eRatingField">
@@ -1259,7 +1260,7 @@ input[type=checkbox]{ accent-color: var(--gold); }
       <div class="rating-row" id="eRatingRow"></div>
     </div>
     <div class="field">
-      <label>Foto da lembrança (link, opcional)</label>
+      <label for="ePhoto">Foto da lembrança (link, opcional)</label>
       <input type="text" id="ePhoto" placeholder="Cole o link de uma foto...">
     </div>
     <div class="sheet-actions">
@@ -1276,7 +1277,7 @@ input[type=checkbox]{ accent-color: var(--gold); }
     <div class="sheet-handle"></div>
     <h2>Digite a senha</h2>
     <div class="field">
-      <label>Só vocês dois podem adicionar ou editar</label>
+      <label for="senhaInput">Só vocês dois podem adicionar ou editar</label>
       <input type="password" id="senhaInput" inputmode="numeric" placeholder="••••" autocomplete="off">
     </div>
     <div id="senhaErro" style="color:#E8735A; font-size:12px; display:none; margin-bottom:6px">Senha incorreta, tenta de novo.</div>
@@ -1315,9 +1316,9 @@ input[type=checkbox]{ accent-color: var(--gold); }
       <button class="g-btn apple" id="gAppleBtn" style="display:none" onclick="gateApple()"><svg width="18" height="20" viewBox="0 0 384 512" fill="currentColor"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>Continuar com Apple</button>
       <div class="g-or"><span>ou com e-mail</span></div>
       <div class="g-seg"><button id="gSegIn" class="on" onclick="gateMode('in')">Entrar</button><button id="gSegUp" onclick="gateMode('up')">Criar conta</button></div>
-      <div class="field" id="gNameF" style="display:none"><label>Seu nome</label><input type="text" id="gName" autocomplete="given-name" placeholder="Como você quer ser chamado(a)"></div>
-      <div class="field"><label>E-mail</label><input type="email" id="gEmail" autocomplete="email" inputmode="email" placeholder="voce@email.com"></div>
-      <div class="field"><label>Senha</label><input type="password" id="gPass" autocomplete="current-password" placeholder="Mínimo 6 caracteres"></div>
+      <div class="field" id="gNameF" style="display:none"><label for="gName">Seu nome</label><input type="text" id="gName" autocomplete="given-name" placeholder="Como você quer ser chamado(a)"></div>
+      <div class="field"><label for="gEmail">E-mail</label><input type="email" id="gEmail" autocomplete="email" inputmode="email" placeholder="voce@email.com"></div>
+      <div class="field"><label for="gPass">Senha</label><input type="password" id="gPass" autocomplete="current-password" placeholder="Mínimo 6 caracteres"></div>
       <div class="g-err" id="gErr"></div>
       <button class="g-btn primary" id="gSubmit" onclick="gateSubmit()">Entrar</button>
       <button class="g-link" id="gForgot" onclick="gateReset()">Esqueci minha senha</button>
@@ -1334,14 +1335,14 @@ input[type=checkbox]{ accent-color: var(--gold); }
 
     <div class="gp" data-p="create">
       <h1 class="gate-h">Contem sobre vocês</h1>
-      <div class="field"><label>Seu nome</label><input type="text" id="cMe" autocomplete="given-name"></div>
-      <div class="field"><label>Nome do(a) parceiro(a)</label><input type="text" id="cPartner"></div>
+      <div class="field"><label for="cMe">Seu nome</label><input type="text" id="cMe" autocomplete="given-name"></div>
+      <div class="field"><label for="cPartner">Nome do(a) parceiro(a)</label><input type="text" id="cPartner"></div>
       <div class="field"><label>Vocês estão</label>
         <div class="chip-row" id="cStatusChips"><button type="button" class="chip" data-s="conhecendo" onclick="gateStatus('conhecendo')">Se conhecendo</button><button type="button" class="chip selected" data-s="namorando" onclick="gateStatus('namorando')">Namorando</button><button type="button" class="chip" data-s="casados" onclick="gateStatus('casados')">Casados</button></div>
       </div>
-      <div class="field" id="cWeddingF" style="display:none"><label>Data do casamento</label><input type="date" id="cWedding"></div>
-      <div class="field" id="cStartF"><label>Pediu em namoro em</label><input type="date" id="cStart"></div>
-      <div class="field"><label id="cFirstLbl">Primeiro date</label><input type="date" id="cFirst">
+      <div class="field" id="cWeddingF" style="display:none"><label for="cWedding">Data do casamento</label><input type="date" id="cWedding"></div>
+      <div class="field" id="cStartF"><label for="cStart">Pediu em namoro em</label><input type="date" id="cStart"></div>
+      <div class="field"><label id="cFirstLbl" for="cFirst">Primeiro date</label><input type="date" id="cFirst">
         <label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-weight:500;cursor:pointer"><input type="checkbox" id="cUnknown" onchange="syncFirstUnknown('c')" style="width:16px;height:16px"> Não lembro do primeiro date</label>
       </div>
       <p class="gate-p small">Tudo isso é opcional e dá pra mudar depois em Menu → Nossa história.</p>
@@ -1353,7 +1354,7 @@ input[type=checkbox]{ accent-color: var(--gold); }
     <div class="gp" data-p="join">
       <h1 class="gate-h">Entrar no casal</h1>
       <p class="gate-p">Digite o código que seu(sua) parceiro(a) te enviou.</p>
-      <div class="field"><label>Código de convite</label><input type="text" id="jCode" autocapitalize="characters" autocomplete="off" placeholder="EX: K7M2QX9PTA" style="letter-spacing:.12em;text-transform:uppercase"></div>
+      <div class="field"><label for="jCode">Código de convite</label><input type="text" id="jCode" autocapitalize="characters" autocomplete="off" placeholder="EX: K7M2QX9PTA" style="letter-spacing:.12em;text-transform:uppercase"></div>
       <div id="jWho" style="display:none"><label class="g-lbl">Quem é você?</label><div class="g-who" id="jWhoBtns"></div></div>
       <div class="g-err" id="jErr"></div>
       <button class="g-btn primary" id="jBtn" onclick="gateJoinLookup()">Continuar</button>
@@ -1536,8 +1537,8 @@ input[type=checkbox]{ accent-color: var(--gold); }
     <div class="sheet-handle"></div>
     <h2>Excluir minha conta</h2>
     <p class="gate-p" style="text-align:left" id="delTxt"></p>
-    <div class="field" id="delPwF" style="display:none"><label>Sua senha</label><input type="password" id="delPw" autocomplete="current-password"></div>
-    <div class="field"><label>Para confirmar, digite EXCLUIR</label><input type="text" id="delConf" autocomplete="off" autocapitalize="characters"></div>
+    <div class="field" id="delPwF" style="display:none"><label for="delPw">Sua senha</label><input type="password" id="delPw" autocomplete="current-password"></div>
+    <div class="field"><label for="delConf">Para confirmar, digite EXCLUIR</label><input type="text" id="delConf" autocomplete="off" autocapitalize="characters"></div>
     <div class="g-err" id="delErr"></div>
     <div class="sheet-actions">
       <button class="btn btn-ghost" onclick="closeOverlay('overlayExcluir')">Cancelar</button>
@@ -3187,7 +3188,7 @@ function renderCategoriasList(){
       <button type="button" class="cat-badge" id="catDot${i}" style="background:${catBadgeBg(c.hex)}" title="Trocar cor" onclick="catPickOpen = (catPickOpen===${i} ? -1 : ${i}); renderCategoriasList()">
         ${catIcon(c.key,24)}
       </button>
-      <input type="text" class="cat-name" value="${escapeHtml(c.label)}" oninput="categoriasEdit[${i}].label=this.value">
+      <input type="text" class="cat-name" aria-label="Nome da categoria" value="${escapeHtml(c.label)}" oninput="categoriasEdit[${i}].label=this.value">
       <button class="cat-del" onclick="removeCategoriaEdit(${i})" aria-label="Excluir categoria"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
     </div>
     ${catPickOpen===i ? `<div class="cat-swatches">${PALETA.map(h=>`<button type="button" class="cat-sw${h.toLowerCase()===(c.hex||'').toLowerCase()?' on':''}" style="background:${catBadgeBg(h)}" aria-label="${h}" onclick="categoriasEdit[${i}].hex='${h}'; catPickOpen=-1; renderCategoriasList()"></button>`).join('')}</div>` : ''}
@@ -3337,7 +3338,10 @@ function applyCoupleUI(){
 const $g = id => document.getElementById(id);
 const FB = ()=>window.__firebase;
 let gMode = 'in', gStatusSel = 'namorando', jCoupleNames = null, pendingInviteCode = '';
+/* com a tela de entrada aberta, o app atrás dela não recebe foco do teclado nem é lido pelo leitor de tela */
+function bloquearFundo(on){ Array.from(document.body.children).forEach(el=>{ if(el.id!=='gate' && el.tagName!=='SCRIPT') el.inert = on; }); }
 function gateShow(p){
+  bloquearFundo(true);
   const g = $g('gate'); g.style.display = 'block';
   g.querySelectorAll('.gp').forEach(x=>x.style.display = x.dataset.p===p ? 'block' : 'none');
   g.scrollTop = 0;
@@ -3348,7 +3352,7 @@ function gateShow(p){
   if(p==='join'){ $g('jWho').style.display='none'; $g('jBtn').style.display='flex'; $g('jBtn').disabled=false; $g('jErr').textContent=''; jCoupleNames=null; }
   if(p==='create'){ if(!$g('cMe').value) $g('cMe').value = (ME && ME.name ? ME.name.split(' ')[0] : ''); }
 }
-function gateHide(){ $g('gate').style.display = 'none'; }
+function gateHide(){ $g('gate').style.display = 'none'; bloquearFundo(false); }
 function authMsg(e){
   const c = (e && e.code) || '';
   const m = {
