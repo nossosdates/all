@@ -54,7 +54,7 @@
   --radius-l: 22px;
 }
 
-*{box-sizing:border-box;margin:0;padding:0;}
+*{box-sizing:border-box;margin:0;padding:0;touch-action:manipulation;}   /* sem zoom por toque duplo (o pinch continua funcionando) */
 body{
   background: radial-gradient(ellipse at top, #FBF8F7 0%, #F5E9ED 60%);
   color: var(--text);
@@ -1561,7 +1561,7 @@ input[type=checkbox]{ accent-color: var(--gold); }
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-  import { getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc, onSnapshot, arrayUnion, arrayRemove, increment } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+  import { getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc, onSnapshot, arrayUnion, arrayRemove, increment, runTransaction } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
   import { getAuth, onAuthStateChanged, OAuthProvider, GoogleAuthProvider, signInWithPopup, signInWithRedirect, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut, updateProfile, deleteUser, reauthenticateWithPopup, reauthenticateWithCredential, EmailAuthProvider } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 
   const firebaseConfig = {
@@ -1627,8 +1627,38 @@ input[type=checkbox]{ accent-color: var(--gold); }
       set: (path, data, merge) => setDoc(P(path), data, merge ? { merge:true } : undefined),
       watch: (path, ok, err) => onSnapshot(P(path), sn => ok(sn.exists() ? sn.data() : null), err),
       remove: path => deleteDoc(P(path)),
-      inc: (path, field) => updateDoc(P(path), { [field]: increment(1) }),
-      leave: (code, uid) => updateDoc(P('couples/'+code), { members: arrayRemove(uid) }),
+      /* Cria o casal e, se ainda houver vaga, reserva o número de Fundador na MESMA transação (o contador e o casal andam juntos; as regras conferem). Devolve o número (0 = sem vaga). */
+      createCouple: async (code, data, founderMax) => {
+        const cref = P('couples/'+code), fref = P('meta/fundadores');
+        const claim = P('founderClaims/' + data.members[0]);   /* cada conta só reserva uma vaga de Fundador na vida */
+        try{
+          let founder = 0;
+          await runTransaction(db, async tx => {
+            const mine = await tx.get(claim);
+            const fs = await tx.get(fref);
+            const n = fs.exists() ? Number(fs.data().count || 0) : 0;
+            const d = { ...data }; delete d.founder; founder = 0;
+            if(!mine.exists() && n < founderMax){ founder = n + 1; d.founder = founder; tx.set(fref, { count: founder, lastCouple: code }); tx.set(claim, { couple: code }); }
+            tx.set(cref, d);
+          });
+          return founder;
+        }catch(e){
+          if(!(e && e.code === 'permission-denied')) throw e;
+          const d = { ...data }; delete d.founder;
+          await setDoc(cref, d);
+          return 0;
+        }
+      },
+      /* quem sai fecha o casal: ninguém mais entra com o código antigo. A segunda tentativa só serve se as regras publicadas ainda forem as antigas. */
+      leave: async (code, uid) => {
+        try{ await updateDoc(P('couples/'+code), { members: arrayRemove(uid), closed: true }); }
+        catch(e){
+          if(!(e && e.code === 'permission-denied')) throw e;
+          await updateDoc(P('couples/'+code), { members: arrayRemove(uid) });
+        }
+      },
+      /* o convite vale 7 dias a partir daqui */
+      renewInvite: code => updateDoc(P('couples/'+code), { inviteAt: Date.now() }),
       join: (code, uid, name) => updateDoc(P('couples/'+code), { members: arrayUnion(uid), ['memberNames.'+uid]: name }),
     },
   };
@@ -1711,13 +1741,24 @@ function exportEventToICS(eventId){
 function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
 
 function blankState(){ return { places: [], events: [], categories: DEFAULT_CATEGORIES.map(c=>({...c})), startDate: null, firstDate: null, weddingDate: null, status: null, firstUnknown: false, couple: null }; }
+function sanitizePlace(p){
+  const q = {...p, id: safeKey(p.id), category: safeKey(p.category), link: safeUrl(p.link), photo: safeUrl(p.photo)};
+  if(Array.isArray(p.visits)) q.visits = p.visits.filter(v=>v && typeof v==='object').map(v=>({...v, photo: safeUrl(v.photo)}));
+  return q;
+}
+function sanitizeEvent(e){
+  return {...e, id: safeKey(e.id), placeId: safeKey(e.placeId), photo: safeUrl(e.photo), date: /^\d{4}-\d{2}-\d{2}$/.test(String(e.date||'')) ? e.date : '1970-01-01', rating: Math.min(5, Math.max(0, parseInt(e.rating,10) || 0))};
+}
 function stateFromDoc(data){
   if(!data) return blankState();
   const _OLD7 = ['restaurante','viagem','batevolta','casa','cultura','aventura','experiencia'];
   let _cats = (data.categories && data.categories.length) ? data.categories : DEFAULT_CATEGORIES;
   /* conta antiga com as 7 categorias de fábrica: mostra também as 2 novas (só na exibição; só é salvo se a pessoa editar) */
   if(_cats.length===7 && _OLD7.every(k=>_cats.some(c=>c.key===k))) _cats = _cats.concat(DEFAULT_CATEGORIES.filter(c=>c.key==='arlivre'||c.key==='criativo'));
-  return { places: data.places || [], events: data.events || [], categories: _cats.map(c=>({...c, label: (c.key==='casa' && c.label==='Casa / Chill') ? 'Casa' : c.label, hex: OLD_TO_NEW_HEX[String(c.hex||'').toLowerCase()] || c.hex})), startDate: data.startDate || null, firstDate: data.firstDate || null, weddingDate: data.weddingDate || null, status: data.status || null, firstUnknown: !!data.firstUnknown, couple: data.couple || null, sorteios: data.sorteios || {} };
+  /* tudo que vem do banco passa por aqui: ids, chaves, cores e links são limpos antes de ir para a tela */
+  const _places = (Array.isArray(data.places) ? data.places : []).filter(p=>p && typeof p==='object').map(sanitizePlace);
+  const _events = (Array.isArray(data.events) ? data.events : []).filter(e=>e && typeof e==='object').map(sanitizeEvent);
+  return { places: _places, events: _events, categories: _cats.filter(c=>c && typeof c==='object').map(c=>({...c, key: safeKey(c.key), label: String(((c.key==='casa' && c.label==='Casa / Chill') ? 'Casa' : c.label) || ''), hex: safeHex(OLD_TO_NEW_HEX[String(c.hex||'').toLowerCase()] || c.hex)})), startDate: data.startDate || null, firstDate: data.firstDate || null, weddingDate: data.weddingDate || null, status: data.status || null, firstUnknown: !!data.firstUnknown, couple: data.couple || null, sorteios: data.sorteios || {} };
 }
 function startCouple(id){
   coupleRef = (id==='legacy') ? 'casal/state' : 'couples/'+id;
@@ -2061,10 +2102,10 @@ function renderProximo(){
 /* ---------- PLACES TAB ---------- */
 function populateFilters(){
   const catSel = document.getElementById('filterCategoria');
-  catSel.innerHTML = '<option value="">Categoria</option>' + state.categories.map(c=>`<option value="${c.key}">${c.label}</option>`).join('');
+  catSel.innerHTML = '<option value="">Categoria</option>' + state.categories.map(c=>`<option value="${escapeHtml(c.key)}">${escapeHtml(c.label)}</option>`).join('');
   const cities = [...new Set(state.places.map(p=>p.city).filter(Boolean))];
   const citySel = document.getElementById('filterCidade');
-  citySel.innerHTML = '<option value="">Cidade</option>' + cities.map(c=>`<option value="${c}">${c}</option>`).join('');
+  citySel.innerHTML = '<option value="">Cidade</option>' + cities.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
 }
 let filtroFavoritosAtivo = false;
 function toggleTema(){
@@ -2449,7 +2490,21 @@ const emptyState = (k,html) => `<div class="empty-state"><div class="es-ic">${_i
 const diceIc = k => `<div class="dice-ic">${_ic(k,32)}</div>`;
 const priceMarks = n => { n=Math.min(3,Math.max(1,Number(n||1))); return `<span class="pc-price"><b>${"$".repeat(n)}</b><i>${"$".repeat(3-n)}</i></span>`; };
 const ICON_HEART_FAV = (on) => `<svg viewBox="0 0 24 24" width="20" height="20" fill="${on?'var(--gold)':'none'}" stroke="${on?'var(--gold)':'currentColor'}" stroke-width="1.8" stroke-linejoin="round"><path d="M12 20.3s-7.3-4.5-9.7-9C.7 7.8 2.1 4.5 5.3 3.5a5.5 5.5 0 0 1 6.7 2.4A5.5 5.5 0 0 1 18.7 3.5c3.2 1 4.6 4.3 3 7.8-2.4 4.5-9.7 9-9.7 9Z"/></svg>`;
-function escapeHtml(s){ const d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
+/* escapa também aspas: assim o texto é seguro dentro de atributos (src="...", href="...", value="...") */
+function escapeHtml(s){
+  return String(s==null ? '' : s).replace(/[&<>"'`]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','`':'&#96;'}[ch]));
+}
+/* só deixa passar links http(s); javascript:, data: e outros viram vazio. Sem esquema, assume https:// */
+function safeUrl(u){
+  u = String(u==null ? '' : u).replace(/[\u0000-\u001f\u007f\s]+/g, ' ').trim();
+  if(!u) return '';
+  if(/^https?:\/\//i.test(u)) return u;
+  if(/^[a-z][a-z0-9+.\-]*:/i.test(u)) return '';
+  return 'https://' + u.replace(/^\/+/, '');
+}
+/* ids e chaves guardados no banco só podem ter letras, números, _ e - (vão dentro de onclick) */
+function safeKey(s){ return String(s==null ? '' : s).replace(/[^A-Za-z0-9_-]/g, '').slice(0, 64); }
+function safeHex(h, fallback){ h = String(h==null ? '' : h); return /^#[0-9a-fA-F]{6}$/.test(h) ? h : (fallback || '#D8A94E'); }
 function metaLineWithMaps(p){
   const parts = [];
   if(p.city) parts.push(escapeHtml(p.city));
@@ -2479,7 +2534,7 @@ function openPlaceForm(existing, surp){
   document.getElementById('deletePlaceBtn').style.display = existing? 'block':'none';
   const chipRow = document.getElementById('fCategoriaChips');
   const selectedCat = existing? existing.category : 'restaurante';
-  chipRow.innerHTML = state.categories.map(c=>`<button type="button" class="chip ${c.key===selectedCat?'selected':''}" style="--cat-color:${c.hex}" data-cat="${c.key}" onclick="selectFormCat('${c.key}')">${c.label}</button>`).join('');
+  chipRow.innerHTML = state.categories.map(c=>`<button type="button" class="chip ${c.key===selectedCat?'selected':''}" style="--cat-color:${c.hex}" data-cat="${c.key}" onclick="selectFormCat('${c.key}')">${escapeHtml(c.label)}</button>`).join('');
   chipRow.dataset.selected = selectedCat;
   const addedByRow = document.getElementById('fAddedByChips');
   const selectedWho = existing? (existing.addedBy||'') : (myName()||'');
@@ -2529,8 +2584,8 @@ async function savePlace(){
     city: document.getElementById('fCidade').value.trim(),
     price: document.getElementById('fPreco').value,
     address: document.getElementById('fEndereco').value.trim(),
-    link: document.getElementById('fLink').value.trim(),
-    photo: document.getElementById('fPhoto').value.trim(),
+    link: safeUrl(document.getElementById('fLink').value),
+    photo: safeUrl(document.getElementById('fPhoto').value),
     notes: document.getElementById('fNotes').value.trim(),
     addedBy: document.getElementById('fAddedByChips').dataset.selected || '',
   };
@@ -2616,7 +2671,7 @@ function openPlaceDetail(id){
     <div class="dt-head" style="--cat-color:${c.hex}">
       <span class="dt-badge">${catIcon(p.category,26)}</span>
       <div class="dt-head-t">
-        <div class="dt-cat">${c.label}</div>
+        <div class="dt-cat">${escapeHtml(c.label)}</div>
         <h2 class="dt-name">${escapeHtml(p.name)}</h2>
       </div>
     </div>
@@ -2723,7 +2778,7 @@ function renderCalendar(){
     grid.appendChild(cell);
   }
   renderDayPanel();
-  document.getElementById('calLegend').innerHTML = state.categories.map(c=>`<div class="item"><span class="dot" style="background:${c.hex}"></span>${c.label}</div>`).join('');
+  document.getElementById('calLegend').innerHTML = state.categories.map(c=>`<div class="item"><span class="dot" style="background:${c.hex}"></span>${escapeHtml(c.label)}</div>`).join('');
 }
 function renderDayPanel(){
   const el = document.getElementById('dayPanel');
@@ -2734,7 +2789,7 @@ function renderDayPanel(){
   const list = evs.map(e=>{
     const p = state.places.find(pl=>pl.id===e.placeId);
     const c = p? catInfo(p.category) : {hex:'#D8A94E', label:'Date'};
-    const sub = [c.label, p&&p.city? escapeHtml(p.city):null, e.rating? '★'.repeat(e.rating):null].filter(Boolean).join(' · ');
+    const sub = [escapeHtml(c.label), p&&p.city? escapeHtml(p.city):null, e.rating? '★'.repeat(e.rating):null].filter(Boolean).join(' · ');
     return `<div class="dp-ev" style="--cat-color:${c.hex}" onclick="${p? `openPlaceDetail('${p.id}')`:''}">
       <div style="flex:1;min-width:0"><div class="nm">${p? escapeHtml(p.name):'Date'}</div><div class="sb">${sub}</div>${e.note? `<div class="nt">${escapeHtml(e.note)}</div>`:''}</div>
       <button class="dp-act" title="Adicionar ao Calendário" onclick="event.stopPropagation(); openCalChooser('${e.id}')">${cal}</button>
@@ -2763,7 +2818,7 @@ function renderAgenda(){
       const c = p? catInfo(p.category) : {hex:'#D8A94E', label:''};
       return `<div class="agenda-event" style="--cat-color:${c.hex}" onclick="openPlaceDetail('${e.placeId}')">
         <div class="name">${p? escapeHtml(p.name):'Date'}</div>
-        <div class="sub">${c.label}${p&&p.city? ' · '+escapeHtml(p.city):''}</div>
+        <div class="sub">${escapeHtml(c.label)}${p&&p.city? ' · '+escapeHtml(p.city):''}</div>
       </div>`;
     }).join('');
     return `<div class="agenda-daygroup">
@@ -2788,7 +2843,7 @@ function openNovaIdeiaFromEvent(){
     date: eventFormDate,
     editingEventId: editingEventId,
     note: document.getElementById('eNote').value,
-    photo: document.getElementById('ePhoto').value,
+    photo: safeUrl(document.getElementById('ePhoto').value),
     rating: eventFormRating
   };
   closeOverlay('overlayEvent');
@@ -2813,7 +2868,7 @@ function renderExistingEventsForDay(ds){
       return `<div style="display:flex; justify-content:space-between; align-items:center; background:var(--surface); border-left:3px solid ${c.hex}; border-radius:8px; padding:9px 12px; margin-bottom:6px">
         <div>
           <div style="font-size:13.5px; font-weight:600">${p? escapeHtml(p.name):'Date'}</div>
-          <div style="font-size:11px; color:var(--text-faint)">${c.label}${e.rating? ' · '+'★'.repeat(e.rating):''}</div>
+          <div style="font-size:11px; color:var(--text-faint)">${escapeHtml(c.label)}${e.rating? ' · '+'★'.repeat(e.rating):''}</div>
         </div>
         <div style="display:flex; align-items:center; gap:10px">
           <button style="background:none; color:var(--text-faint); font-size:15px" title="Adicionar ao Calendário" onclick="event.stopPropagation(); openCalChooser('${e.id}')">${_ic('calendar',17)}</button>
@@ -2917,14 +2972,14 @@ async function saveEvent(){
     if(e){
       e.placeId = placeId;
       e.note = document.getElementById('eNote').value.trim();
-      e.photo = document.getElementById('ePhoto').value.trim();
+      e.photo = safeUrl(document.getElementById('ePhoto').value);
       e.rating = eventFormRating;
     }
   } else {
     state.events.push({
       id: uid(), placeId, date: eventFormDate,
       note: document.getElementById('eNote').value.trim(),
-      photo: document.getElementById('ePhoto').value.trim(),
+      photo: safeUrl(document.getElementById('ePhoto').value),
       rating: eventFormRating
     });
   }
@@ -2981,7 +3036,7 @@ function openSorteio(){
   const chipRow = document.getElementById('sCategoriaChips');
   chipRow.innerHTML = state.categories.map(o=>{
     const hex = catInfo(o.key).hex;
-    return `<button type="button" class="chip" style="--cat-color:${hex}" data-key="${o.key}" onclick="selectSorteioCat('${o.key}')">${o.label}</button>`;
+    return `<button type="button" class="chip" style="--cat-color:${hex}" data-key="${o.key}" onclick="selectSorteioCat('${o.key}')">${escapeHtml(o.label)}</button>`;
   }).join('');
   document.getElementById('sCidade').value = '';
   document.getElementById('sConsiderarClima').checked = false;
@@ -3083,7 +3138,7 @@ async function showSorteioResult(pick, cidadeBuscada, rainNote){
   <div id="surpresaContent" class="${surpresa? 'surpresa-blurred':''}">
     ${diceIc("sparkles")}
     ${rainNote? `<div style="font-size:11.5px;color:var(--gold);font-weight:600;margin-bottom:6px">${rainNote}</div>`:''}
-    <span class="cat-tag" style="--cat-color:${c.hex}">${c.label}</span>
+    <span class="cat-tag" style="--cat-color:${c.hex}">${escapeHtml(c.label)}</span>
     <h3>${escapeHtml(pick.name)}</h3>
     <div class="addr">${pick.city? escapeHtml(pick.city):''}${pick.address? ' · '+escapeHtml(pick.address):''} · ${priceMarks(pick.price)}</div>
     ${pick.notes? `<div class="notes">${escapeHtml(pick.notes)}</div>`:''}
@@ -3363,19 +3418,6 @@ function genCode(){
   const a = new Uint32Array(10); crypto.getRandomValues(a);
   return Array.from(a, n=>CODE_CHARS[n % CODE_CHARS.length]).join('');
 }
-async function claimFundador(){
-  try{
-    const ref = 'meta/fundadores';
-    const cur = await FB().db.get(ref);
-    const n = cur ? Number(cur.count||0) : 0;
-    if(n >= FUND_MAX) return 0;
-    if(!cur){ await FB().db.set(ref, { count:1 }); return 1; }
-    await FB().db.inc(ref, 'count');
-    const after = await FB().db.get(ref);
-    const k = after ? Number(after.count||0) : 0;
-    return (k>=1 && k<=FUND_MAX) ? k : 0;
-  }catch(e){ console.error(e); return 0; }
-}
 async function gateCreate(){
   const err = $g('cErr'); err.textContent = '';
   const me = $g('cMe').value.trim(), partner = $g('cPartner').value.trim();
@@ -3394,9 +3436,7 @@ async function gateCreate(){
   };
   const code = genCode();
   try{
-    const fnum = await claimFundador();
-    if(fnum) docData.founder = fnum;
-    await FB().db.set('couples/'+code, docData);
+    await FB().db.createCouple(code, docData, FUND_MAX);
     await FB().db.set('users/'+ME.uid, { coupleId: code }, true);
   }catch(e){ console.error(e); err.textContent = authMsg(e); return; }
   gateNewCode = code;
@@ -3407,7 +3447,7 @@ async function gateCreate(){
 function gateEnter(){ startCouple(gateNewCode); }
 function inviteText(code){
   const link = SITE_URL + '?convite=' + code;
-  return `Entra no nosso app de dates! 💕\nCódigo: ${code}\n${link}`;
+  return `Entra no nosso app de dates! 💕\nCódigo: ${code}\n${link}\n(o convite vale por 7 dias)`;
 }
 async function shareInvite(code){
   const text = inviteText(code);
@@ -3417,7 +3457,12 @@ async function shareInvite(code){
   try{ await navigator.clipboard.writeText(text); alert('Convite copiado! Cole numa conversa.'); }
   catch(e){ prompt('Copie o convite:', text); }
 }
-function openConvite(){ $g('cvCode').textContent = currentCoupleCode(); openOverlayEl('overlayConvite'); }
+async function openConvite(){
+  if(coupleDoc && coupleDoc.closed){ alert('Por segurança, este espaço foi fechado para novas entradas porque uma pessoa saiu. Para convidar alguém, escreva para contato@nossosdates.com.br.'); return; }
+  const code = currentCoupleCode();
+  $g('cvCode').textContent = code; openOverlayEl('overlayConvite');
+  if(code && coupleDoc && (coupleDoc.members||[]).length < 2){ try{ await FB().db.renewInvite(code); }catch(e){ console.error(e); } }
+}
 async function gateJoinLookup(){
   const err = $g('jErr'); err.textContent = '';
   const code = $g('jCode').value.trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
@@ -3434,7 +3479,7 @@ async function gateJoinLookup(){
     $g('jWho').style.display = 'block'; $g('jBtn').style.display = 'none';
   }catch(e){
     console.error(e);
-    err.textContent = (e && e.code==='permission-denied') ? 'Esse casal já está completo ou o código está errado.' : authMsg(e);
+    err.textContent = (e && e.code==='permission-denied') ? 'Esse código não vale mais: o casal já está completo, o convite venceu ou o código está errado. Peça para a outra pessoa abrir "Convidar" de novo.' : authMsg(e);
   }
   btn.disabled = false;
 }
@@ -3461,7 +3506,7 @@ async function onAuth(user){
       try{ legacy = await FB().db.get('casal/state'); }catch(e){ legacy = null; }
       if(legacy){ await FB().db.set('users/'+user.uid, { coupleId:'legacy' }, true); u = { coupleId:'legacy' }; }
     }
-    surpresas = (u && Array.isArray(u.surpresas)) ? u.surpresas : [];
+    surpresas = (u && Array.isArray(u.surpresas)) ? u.surpresas.filter(p=>p && typeof p==='object').map(sanitizePlace) : [];
     notifPrefs = Object.assign({}, NOTIF_DEFAULT, (u && u.notif) || {});
     if(!u || !u.coupleId){ gateShow('choose'); return; }
     startCouple(u.coupleId);
