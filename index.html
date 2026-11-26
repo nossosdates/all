@@ -822,6 +822,19 @@ input[type=checkbox]{ accent-color: var(--gold); }
 .cal-cell.selected{ background:color-mix(in srgb, var(--gold) 10%, transparent); box-shadow:inset 0 0 0 2px var(--gold); }
 .cal-cell.other-month{ opacity:.4; }
 
+/* calendário do mês dentro de um cartão com sombra (como os balões do app): topo rosa e divisões bem visíveis */
+.cal-card{ --cal-line:color-mix(in srgb, var(--gold) 22%, var(--border)); background:var(--surface); border:1px solid var(--cal-line); border-radius:18px; overflow:hidden; box-shadow:0 10px 28px rgba(110,40,66,.13), 0 2px 6px rgba(110,40,66,.08); }
+:root[data-theme="dark"] .cal-card{ box-shadow:0 10px 28px rgba(0,0,0,.35), 0 2px 6px rgba(0,0,0,.25); }
+.cal-card .cal-grid{ border:0; }
+#calDow{ background:var(--gold-soft); border-bottom:1px solid var(--cal-line); }
+#calDow .cal-dow{ padding:12px 0 11px; font-size:11px; font-weight:800; letter-spacing:.06em; color:color-mix(in srgb, var(--gold) 70%, var(--text)); border-right:1px solid var(--cal-line); }
+#calGrid .cal-cell{ border-right-color:var(--cal-line); border-bottom-color:var(--cal-line); }
+#calDow .cal-dow:last-child, #calGrid .cal-cell:nth-child(7n){ border-right:0; }
+#calGrid .cal-cell:nth-last-child(-n+7){ border-bottom:0; }
+/* dias de outro mês: apaga só o número e as faixas, sem apagar as linhas */
+#calGrid .cal-cell.other-month{ opacity:1; }
+#calGrid .cal-cell.other-month > *{ opacity:.4; }
+
 /* cores vivas em todas as telas */
 :root{ --cat-restaurante:#E5484D; --cat-viagem:#0EA5A0; --cat-batevolta:#5B5BEF; --cat-casa:#8B5CF6; --cat-cultura:#3B82F6; --cat-aventura:#22A559; --cat-experiencia:#EC4899; }
 .sortear-tile.t1{ background: linear-gradient(150deg, #6B6DF8, #4747DE); }
@@ -1015,8 +1028,10 @@ input[type=checkbox]{ accent-color: var(--gold); }
         <button onclick="shiftMonth(1)" aria-label="Próximo mês"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ><path d="m9 6 6 6-6 6"/></svg></button>
       </div>
     </div>
-    <div class="cal-grid" id="calDow"></div>
-    <div class="cal-grid cal-grid-month" id="calGrid" style="margin-top:5px"></div>
+    <div class="cal-card">
+      <div class="cal-grid" id="calDow"></div>
+      <div class="cal-grid cal-grid-month" id="calGrid"></div>
+    </div>
     <div class="day-panel" id="dayPanel"></div>
     <div class="legend" id="calLegend"></div>
   </div>
