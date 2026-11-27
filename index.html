@@ -771,7 +771,17 @@ input[type=checkbox]{ accent-color: var(--gold); }
 
 .plan-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:6px 0 14px; }
 .plan-card{ position:relative; background:var(--surface); border:1.5px solid var(--border); border-radius:20px; padding:14px 12px; box-shadow:var(--shadow-card); }
+.plan-aviso{ background:var(--gold-soft); border-radius:14px; padding:12px 14px; margin:0 0 14px; font-size:13px; font-weight:600; line-height:1.45; color:var(--text); text-align:left; }
 .plan-card.pro{ border-color:var(--gold); }
+.agenda-event{ position:relative; padding-right:48px !important; }
+.ag-share{ position:absolute; right:8px; top:50%; transform:translateY(-50%); width:36px; height:36px; border:0; border-radius:50%; background:var(--gold-soft); color:var(--text); display:flex; align-items:center; justify-content:center; cursor:pointer; }
+.dp-act.dp-story{ width:auto; padding:0 8px; font-size:11px; font-weight:700; color:var(--gold); }
+.share-toast{ position:fixed; left:16px; right:16px; max-width:460px; margin:0 auto; bottom:calc(104px + env(safe-area-inset-bottom,0px)); z-index:60; display:flex; align-items:center; gap:10px; padding:10px 10px 10px 16px; border-radius:16px; background:var(--surface); border:1px solid var(--border); box-shadow:0 12px 30px rgba(60,20,35,.22); font-size:13.5px; font-weight:700; color:var(--text); }
+.share-toast span{ flex:1; }
+.share-toast .st-go{ border:0; border-radius:999px; padding:10px 16px; background:var(--gold); color:#fff; font-weight:800; cursor:pointer; }
+.share-toast .st-x{ border:0; background:transparent; font-size:20px; color:var(--text-dim); width:32px; height:32px; cursor:pointer; }
+.menu-discreto{ display:block; width:100%; border:0; background:transparent; padding:10px; font-size:12.5px; font-weight:600; color:var(--text-dim); text-decoration:underline; cursor:pointer; }
+.story-prev{ display:block; width:auto; max-width:100%; max-height:52vh; margin:0 auto 14px; border-radius:18px; box-shadow:var(--shadow-card); }
 .plan-card.current{ outline:2.5px solid color-mix(in srgb, var(--gold) 45%, transparent); outline-offset:2px; }
 .plan-tag{ position:absolute; top:-10px; left:12px; background:var(--gold); color:#FFF7F2; font-size:10.5px; font-weight:800; letter-spacing:.04em; padding:3px 9px; border-radius:999px; text-transform:uppercase; }
 .plan-name{ font-size:13px; font-weight:800; color:var(--text-dim); text-transform:uppercase; letter-spacing:.06em; }
@@ -1067,6 +1077,7 @@ input[type=checkbox]{ accent-color: var(--gold); }
       <button class="menu-row" onclick="closeOverlay('overlayMenu'); openOverlayRelacionamento();"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.3s-7.3-4.5-9.7-9C.7 7.8 2.1 4.5 5.3 3.5a5.5 5.5 0 0 1 6.7 2.4A5.5 5.5 0 0 1 18.7 3.5c3.2 1 4.6 4.3 3 7.8-2.4 4.5-9.7 9-9.7 9Z"/></svg></span><span class="mr-t">Nossa história</span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
       <button class="menu-row" onclick="closeOverlay('overlayMenu'); startCatEdit();"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2.5v2.4M12 19.1v2.4M4.6 4.6l1.7 1.7M17.7 17.7l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.6 19.4l1.7-1.7M17.7 6.3l1.7-1.7"/></svg></span><span class="mr-t">Categorias e ícones<small style="display:block;font-weight:500;font-size:11.5px;color:var(--text-dim)">Cores e ícones novos</small></span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
       <button class="menu-row" onclick="closeOverlay('overlayMenu'); openEspeciais();"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></span><span class="mr-t">Datas especiais<small style="display:block;font-weight:500;font-size:11.5px;color:var(--text-dim)">Mesversários, aniversários e lembretes</small></span><span class="pro-pill">PRO</span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
+      <button class="menu-row" onclick="closeOverlay('overlayMenu'); openStoryJuntos();"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="2.6"/><path d="M12 15.5s-3.2-1.9-3.2-4.1a1.7 1.7 0 0 1 3.2-.8 1.7 1.7 0 0 1 3.2.8c0 2.2-3.2 4.1-3.2 4.1Z"/></svg></span><span class="mr-t">Cartão para Stories<small style="display:block;font-weight:500;font-size:11.5px;color:var(--text-dim)">"Juntos há X dias" pra postar</small></span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
       <button class="menu-row" onclick="closeOverlay('overlayMenu'); openRetro();"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V11M10 20V4M16 20v-6M22 20H2"/></svg></span><span class="mr-t">Retrospectiva do casal<small style="display:block;font-weight:500;font-size:11.5px;color:var(--text-dim)">O resumo do ano de vocês</small></span><span class="pro-pill">PRO</span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
       <button class="menu-row" onclick="closeOverlay('overlayMenu'); openPacotes();"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m21 8-9-5-9 5v8l9 5 9-5V8Z"/><path d="m3 8 9 5 9-5M12 13v8"/></svg></span><span class="mr-t">Pacotes de dates<small style="display:block;font-weight:500;font-size:11.5px;color:var(--text-dim)">Coleções de ideias prontas</small></span><span class="pro-pill">PRO</span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
       <button class="menu-row" onclick="closeOverlay('overlayMenu'); openPlano();"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.3 6.8 19.1l1-5.8-4.3-4.1 5.9-.9z"/></svg></span><span class="mr-t">Meu plano<small id="menuPlanTxt" style="display:block;font-weight:500;font-size:11.5px;color:var(--text-dim)"></small></span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
@@ -1079,6 +1090,8 @@ input[type=checkbox]{ accent-color: var(--gold); }
       <button class="menu-row" onclick="exportarDados()"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-4-4m4 4 4-4M5 19h14"/></svg></span><span class="mr-t">Exportar meus dados</span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
       <button class="menu-row" onclick="openExcluir()"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg></span><span class="mr-t">Excluir minha conta</span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
       <button class="menu-row" onclick="closeOverlay('overlayMenu'); gateSignOut();"><span class="mr-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg></span><span class="mr-t">Sair da conta<small id="menuAcc" style="display:block;font-weight:500;font-size:11.5px;color:var(--text-dim)"></small></span><svg class="mr-ch" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
+      <button class="menu-discreto" id="menuSairCasal" style="display:none" onclick="sairDoCasal()">Sair do casal</button>
+      <button class="menu-discreto" id="menuRemover" style="display:none" onclick="removerCompanheiro()">Remover companheiro(a) · Pro</button>
 
     </div>
     <div class="sheet-actions">
@@ -1345,6 +1358,7 @@ input[type=checkbox]{ accent-color: var(--gold); }
       <p class="gate-p">Cada casal tem o seu espaço. Vocês dois veem e editam os mesmos dates.</p>
       <button class="g-card" onclick="gateShow('create')"><b>Criar o nosso casal</b><span>Eu começo e convido meu(minha) parceiro(a) com um código</span></button>
       <button class="g-card" onclick="gateShow('join')"><b>Tenho um código de convite</b><span>Meu(minha) parceiro(a) já criou o casal</span></button>
+      <button class="g-btn ghost" id="gVoltarLista" style="display:none" onclick="voltarListaGuardada()">Voltar à lista que guardei</button>
       <button class="g-link" onclick="gateSignOut()">Sair da conta</button>
     </div>
 
@@ -1370,17 +1384,17 @@ input[type=checkbox]{ accent-color: var(--gold); }
       <h1 class="gate-h">Entrar no casal</h1>
       <p class="gate-p">Digite o código que seu(sua) parceiro(a) te enviou.</p>
       <div class="field"><label for="jCode">Código de convite</label><input type="text" id="jCode" autocapitalize="characters" autocomplete="off" placeholder="EX: K7M2QX9PTA" style="letter-spacing:.12em;text-transform:uppercase"></div>
-      <div id="jWho" style="display:none"><label class="g-lbl">Quem é você?</label><div class="g-who" id="jWhoBtns"></div></div>
+      <div id="jWho" style="display:none"><p class="gate-p" id="jConf"></p><div class="field"><label for="jName">Seu nome</label><input type="text" id="jName" maxlength="40" autocomplete="given-name"></div><button type="button" class="g-btn primary" id="jOk" onclick="gateJoin()">Entrar no casal</button></div>
       <div class="g-err" id="jErr"></div>
       <button class="g-btn primary" id="jBtn" onclick="gateJoinLookup()">Continuar</button>
-      <button class="g-link" onclick="gateShow('choose')">Voltar</button>
+      <button class="g-link" onclick="limparConvite(); gateShow('choose')">Voltar</button>
     </div>
 
     <div class="gp" data-p="invite">
       <h1 class="gate-h">Casal criado!</h1>
       <p class="gate-p">Mande este código pro(a) <b id="iPartner"></b>. Quando ele(a) entrar, vocês passam a ver os mesmos dates.</p>
       <div class="g-code" id="iCode"></div>
-      <button class="g-btn primary" onclick="shareInvite(gateNewCode)">Enviar convite</button>
+      <button class="g-btn primary" onclick="shareInvite(conviteAtual)">Convidar</button>
       <button class="g-btn ghost" onclick="gateEnter()">Entrar no app</button>
     </div>
 
@@ -1401,10 +1415,10 @@ input[type=checkbox]{ accent-color: var(--gold); }
     <h2 id="planTitle">Meu plano</h2>
     <p class="gate-p" id="planSub" style="text-align:left"></p>
     <div class="mes-card" id="planFund" style="display:none;cursor:default"><span class="mc-ic">🏅</span><div><div class="mc-t">Casais Fundadores</div><div class="mc-s" id="planFundTxt"></div></div></div>
+    <div class="plan-aviso">Pro grátis para todos até 31/05/2027. Depois dessa data o Pro passa a ser pago, e avisamos com antecedência antes de qualquer cobrança.</div>
     <div class="plan-grid">
       <div class="plan-card" id="planFree">
         <div class="plan-name">Grátis</div>
-        <div class="plan-price">R$ 0</div>
         <ul>
           <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span>Até <b>30 ideias</b></span></li>
           <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span>9 categorias (muda nome e cor)</span></li>
@@ -1416,8 +1430,6 @@ input[type=checkbox]{ accent-color: var(--gold); }
       <div class="plan-card pro" id="planPro">
         <div class="plan-tag">Recomendado</div>
         <div class="plan-name">Pro</div>
-        <div class="plan-price">R$ 14,90<small>/mês</small></div>
-        <div class="plan-alt">ou <b>R$ 89,90/ano</b> (R$ 7,49 por mês)</div>
         <ul>
           <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span>Tudo do Grátis</span></li>
           <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span><b>Ideias e sorteios ilimitados</b></span></li>
@@ -1541,7 +1553,7 @@ input[type=checkbox]{ accent-color: var(--gold); }
     <div class="g-code" id="cvCode"></div>
     <div class="sheet-actions">
       <button class="btn btn-ghost" onclick="closeOverlay('overlayConvite')">Fechar</button>
-      <button class="btn btn-primary" onclick="shareInvite(currentCoupleCode())">Enviar convite</button>
+      <button class="btn btn-primary" onclick="shareInvite(conviteAtual)">Convidar</button>
     </div>
   </div>
 </div>
@@ -1562,6 +1574,20 @@ input[type=checkbox]{ accent-color: var(--gold); }
   </div>
 </div>
 
+<!-- MODAL: Cartão para Stories -->
+<div class="overlay" id="overlayStory">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h2>Cartão para Stories</h2>
+    <img id="storyImg" class="story-prev" alt="Prévia do cartão para Stories">
+    <div class="sheet-actions">
+      <button class="btn btn-ghost" onclick="baixarStory()">Baixar imagem</button>
+      <button class="btn btn-primary" onclick="compartilharStory()">Compartilhar</button>
+    </div>
+    <div class="sheet-actions"><button class="btn btn-ghost" style="width:100%" onclick="closeOverlay('overlayStory')">Fechar</button></div>
+  </div>
+</div>
+
 <!-- MODAL: Adicionar ao calendário -->
 <div class="overlay" id="overlayCal">
   <div class="sheet">
@@ -1577,7 +1603,7 @@ input[type=checkbox]{ accent-color: var(--gold); }
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-  import { getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc, onSnapshot, arrayUnion, arrayRemove, increment, runTransaction } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+  import { getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc, onSnapshot, arrayUnion, arrayRemove, increment, runTransaction, writeBatch, deleteField } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
   import { getAuth, onAuthStateChanged, OAuthProvider, GoogleAuthProvider, signInWithPopup, signInWithRedirect, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut, updateProfile, deleteUser, reauthenticateWithPopup, reauthenticateWithCredential, EmailAuthProvider } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 
   const firebaseConfig = {
@@ -1643,10 +1669,12 @@ input[type=checkbox]{ accent-color: var(--gold); }
       set: (path, data, merge) => setDoc(P(path), data, merge ? { merge:true } : undefined),
       watch: (path, ok, err) => onSnapshot(P(path), sn => ok(sn.exists() ? sn.data() : null), err),
       remove: path => deleteDoc(P(path)),
-      /* Cria o casal e, se ainda houver vaga, reserva o número de Fundador na MESMA transação (o contador e o casal andam juntos; as regras conferem). Devolve o número (0 = sem vaga). */
+      /* Cria o casal, o convite e, se ainda houver vaga, o número de Fundador na MESMA gravação (as regras conferem). */
       createCouple: async (code, data, founderMax) => {
         const cref = P('couples/'+code), fref = P('meta/fundadores');
         const claim = P('founderClaims/' + data.members[0]);   /* cada conta só reserva uma vaga de Fundador na vida */
+        const iref = P('invites/' + data.invite);
+        const convite = { couple: code, from: data.memberNames[data.members[0]], at: data.inviteAt, full: false };
         try{
           let founder = 0;
           await runTransaction(db, async tx => {
@@ -1656,26 +1684,53 @@ input[type=checkbox]{ accent-color: var(--gold); }
             const d = { ...data }; delete d.founder; founder = 0;
             if(!mine.exists() && n < founderMax){ founder = n + 1; d.founder = founder; tx.set(fref, { count: founder, lastCouple: code }); tx.set(claim, { couple: code }); }
             tx.set(cref, d);
+            tx.set(iref, convite);
           });
           return founder;
         }catch(e){
           if(!(e && e.code === 'permission-denied')) throw e;
           const d = { ...data }; delete d.founder;
-          await setDoc(cref, d);
+          const b = writeBatch(db); b.set(cref, d); b.set(iref, convite); await b.commit();
           return 0;
         }
       },
-      /* quem sai fecha o casal: ninguém mais entra com o código antigo. A segunda tentativa só serve se as regras publicadas ainda forem as antigas. */
-      leave: async (code, uid) => {
-        try{ await updateDoc(P('couples/'+code), { members: arrayRemove(uid), closed: true }); }
-        catch(e){
-          if(!(e && e.code === 'permission-denied')) throw e;
-          await updateDoc(P('couples/'+code), { members: arrayRemove(uid) });
-        }
+      /* convite novo (o antigo deixa de valer) */
+      newInvite: async (id, code, from, oldCode) => {
+        if(oldCode){ try{ await deleteDoc(P('invites/'+oldCode)); }catch(e){ console.warn(e); } }
+        const at = Date.now(), b = writeBatch(db);
+        b.update(P('couples/'+id), { invite: code, inviteAt: at });
+        b.set(P('invites/'+code), { couple: id, from, at, full: false });
+        await b.commit();
       },
-      /* o convite vale 7 dias a partir daqui */
-      renewInvite: code => updateDoc(P('couples/'+code), { inviteAt: Date.now() }),
-      join: (code, uid, name) => updateDoc(P('couples/'+code), { members: arrayUnion(uid), ['memberNames.'+uid]: name }),
+      /* o mesmo convite ganha mais 7 dias */
+      renewInvite: async (id, code, from) => {
+        const at = Date.now(), b = writeBatch(db);
+        b.update(P('couples/'+id), { inviteAt: at });
+        b.set(P('invites/'+code), { couple: id, from, at, full: false });
+        await b.commit();
+      },
+      /* entrar: as regras só aceitam com o convite atual e com 1 pessoa no casal */
+      join: async (id, uid, name, code) => {
+        await updateDoc(P('couples/'+id), { members: arrayUnion(uid), ['memberNames.'+uid]: name, joinCode: code });
+        try{ await updateDoc(P('invites/'+code), { full: true }); }catch(e){ console.warn(e); }
+      },
+      /* sair: apaga o convite e o próprio nome; a lista fica com o casal */
+      leave: async (id, uid, oldCode) => {
+        if(oldCode){ try{ await deleteDoc(P('invites/'+oldCode)); }catch(e){ console.warn(e); } }
+        await updateDoc(P('couples/'+id), { members: arrayRemove(uid), invite: '', inviteAt: 0, ['memberNames.'+uid]: deleteField() });
+      },
+      /* remover companheiro(a) (Pro): tira a pessoa, troca o convite e libera a vaga */
+      removePartner: async (id, otherUid, oldCode, code, from) => {
+        if(oldCode){ try{ await deleteDoc(P('invites/'+oldCode)); }catch(e){ console.warn(e); } }
+        const at = Date.now(), b = writeBatch(db);
+        b.update(P('couples/'+id), { members: arrayRemove(otherUid), invite: code, inviteAt: at, ['memberNames.'+otherUid]: deleteField() });
+        b.set(P('invites/'+code), { couple: id, from, at, full: false });
+        await b.commit();
+      },
+      deleteCouple: async (id, code) => {
+        if(code){ try{ await deleteDoc(P('invites/'+code)); }catch(e){ console.warn(e); } }
+        await deleteDoc(P('couples/'+id));
+      },
     },
   };
   window.dispatchEvent(new Event("firebase-ready"));
@@ -1729,6 +1784,11 @@ let sorteioCurrentResult = null;
 const todayStr = () => fmtDate(new Date());
 function fmtDate(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 function parseDate(s){ const [y,m,d]=s.split('-').map(Number); return new Date(y,m-1,d); }
+/* dois lembretes em eventos de dia inteiro: 1 dia antes (9h) e na manhã do dia (9h) */
+function alarmesICS(titulo){
+  const al = (gatilho, texto) => ['BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:'+texto,'TRIGGER:'+gatilho,'END:VALARM'];
+  return [...al('-PT15H', 'Amanhã: '+titulo), ...al('PT9H', 'É hoje: '+titulo)];
+}
 function exportEventToICS(eventId){
   const e = state.events.find(ev=>ev.id===eventId);
   if(!e) return;
@@ -1750,6 +1810,7 @@ function exportEventToICS(eventId){
   ];
   if(e.note) lines.push(`DESCRIPTION:${esc(e.note)}`);
   if(p && p.address) lines.push(`LOCATION:${esc(p.address)}`);
+  lines.push(...alarmesICS(esc(name)));
   lines.push('END:VEVENT','END:VCALENDAR');
   const blob = new Blob([lines.join('\r\n')], {type:'text/calendar;charset=utf-8'});
   const url = URL.createObjectURL(blob);
@@ -1785,12 +1846,14 @@ function startCouple(id){
   if(unwatchCouple){ try{unwatchCouple();}catch(e){} unwatchCouple = null; }
   let first = true;
   unwatchCouple = window.__firebase.db.watch(coupleRef, (data)=>{
+    if(data && Array.isArray(data.members) && ME && !data.members.includes(ME.uid)){ foraDoCasal(); return; }
     coupleDoc = data;
     state = stateFromDoc(data);
     if(first){ first = false; gateHide(); }
     renderAll();
   }, (err)=>{
     console.error('Erro ao sincronizar com o Firestore', err);
+    if(err && err.code==='permission-denied' && String(coupleRef).startsWith('couples/')){ foraDoCasal(); return; }
     if(first){ first = false; gateShow('error'); }
     else document.getElementById('placesList').innerHTML = `<div class="empty-state">Não deu pra conectar com o banco de dados agora.<br>Confere sua internet e recarrega a página.</div>`;
   });
@@ -2624,9 +2687,11 @@ async function savePlace(){
     data.id = uid(); data.createdAt = todayStr();
     state.places.push(data);
   }
+  const ideiaNova = !editingPlaceId && !creatingPlaceFromEvent ? data.id : null;
   await saveState();
   closeOverlay('overlayPlace');
   populateFilters(); renderPlaces(); renderCalendar(); renderTimeline(); renderCounter(); renderWeekStrip();
+  if(ideiaNova) oferecerCompartilhar(ideiaNova);
   if(creatingPlaceFromEvent){
     creatingPlaceFromEvent = false;
     const newId = editingPlaceId || data.id;
@@ -2722,8 +2787,32 @@ function compartilharIdeia(id){
   const p = state.places.find(pl=>pl.id===id);
   if(!p) return;
   const c = catInfo(p.category);
-  const texto = `💗 Ideia de date: *${p.name}*\n${c.label}${p.city? ' · '+p.city:''}\n${p.notes? p.notes+'\n':''}${p.link||''}`;
-  compartilharTexto(texto);
+  /* o link do site vai por último e é o único: assim o WhatsApp mostra o banner do Nossos Dates */
+  const linhas = ['💗 *Ideia de date pra gente!*', '', '*'+p.name+'*', '🏷️ *Categoria:* '+c.label];
+  if(p.city) linhas.push('📍 *Cidade:* '+p.city);
+  if(p.notes) linhas.push('📝 *Observações:* '+p.notes);
+  linhas.push('', SITE_URL);
+  compartilharTexto(linhas.join('\n'));
+}
+/* date marcado no calendário */
+function compartilharDate(id){
+  const e = state.events.find(ev=>ev.id===id); if(!e) return;
+  const p = state.places.find(pl=>pl.id===e.placeId);
+  const quando = parseDate(e.date).toLocaleDateString('pt-BR', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+  const linhas = ['📅 *Date marcado!*', '', '*'+(p ? p.name : 'Date')+'*', '🗓️ '+quando.charAt(0).toUpperCase()+quando.slice(1)];
+  if(e.note) linhas.push('📝 '+e.note);
+  linhas.push('', SITE_URL);
+  compartilharTexto(linhas.join('\n'));
+}
+/* aviso no rodapé, logo depois de guardar uma ideia nova */
+function oferecerCompartilhar(id){
+  const velho = document.getElementById('shareToast'); if(velho) velho.remove();
+  const t = document.createElement('div'); t.id = 'shareToast'; t.className = 'share-toast'; t.setAttribute('role','status');
+  t.innerHTML = '<span>Ideia guardada 💕</span><button type="button" class="st-go">Compartilhar</button><button type="button" class="st-x" aria-label="Fechar aviso">×</button>';
+  t.querySelector('.st-go').onclick = ()=>{ t.remove(); compartilharIdeia(id); };
+  t.querySelector('.st-x').onclick = ()=>t.remove();
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(), 9000);
 }
 function compartilharTexto(texto){
   if(navigator.share){
@@ -2812,6 +2901,8 @@ function renderDayPanel(){
     const sub = [escapeHtml(c.label), p&&p.city? escapeHtml(p.city):null, e.rating? '★'.repeat(e.rating):null].filter(Boolean).join(' · ');
     return `<div class="dp-ev" style="--cat-color:${c.hex}" onclick="${p? `openPlaceDetail('${p.id}')`:''}">
       <div style="flex:1;min-width:0"><div class="nm">${p? escapeHtml(p.name):'Date'}</div><div class="sb">${sub}</div>${e.note? `<div class="nt">${escapeHtml(e.note)}</div>`:''}</div>
+      <button class="dp-act" title="Compartilhar date" aria-label="Compartilhar date" onclick="event.stopPropagation(); compartilharDate('${e.id}')">${ICON_SHARE}</button>
+      ${e.date<=todayStr() ? `<button class="dp-act dp-story" title="Cartão para Stories" aria-label="Cartão para Stories" onclick="event.stopPropagation(); openStoryDate('${e.id}')">Stories</button>` : ''}
       <button class="dp-act" title="Adicionar ao Calendário" onclick="event.stopPropagation(); openCalChooser('${e.id}')">${cal}</button>
       <button class="dp-act" style="width:auto;padding:0 6px;color:var(--gold);font-size:12px;font-weight:700" onclick="event.stopPropagation(); requireAuth(()=>editExistingEvent('${e.id}'))">Editar</button>
     </div>`;
@@ -2837,6 +2928,7 @@ function renderAgenda(){
       const p = state.places.find(pl=>pl.id===e.placeId);
       const c = p? catInfo(p.category) : {hex:'#D8A94E', label:''};
       return `<div class="agenda-event" style="--cat-color:${c.hex}" onclick="openPlaceDetail('${e.placeId}')">
+        <button class="ag-share" type="button" aria-label="Compartilhar date" onclick="event.stopPropagation(); compartilharDate('${e.id}')">${ICON_SHARE}</button>
         <div class="name">${p? escapeHtml(p.name):'Date'}</div>
         <div class="sub">${escapeHtml(c.label)}${p&&p.city? ' · '+escapeHtml(p.city):''}</div>
       </div>`;
@@ -3346,13 +3438,15 @@ function applyCoupleUI(){
   const acc = document.getElementById('menuAcc'); if(acc) acc.textContent = ME && ME.email ? ME.email : '';
   const pending = !!(coupleDoc && currentCoupleCode() && (coupleDoc.members||[]).length<2);
   const cr = document.getElementById('menuConviteRow'); if(cr) cr.style.display = pending ? 'flex' : 'none';
+  const ms = document.getElementById('menuSairCasal'); if(ms) ms.style.display = currentCoupleCode() ? 'block' : 'none';
+  const mr = document.getElementById('menuRemover'); if(mr) mr.style.display = (currentCoupleCode() && coupleDoc && (coupleDoc.members||[]).length===2) ? 'block' : 'none';
   const ct = document.getElementById('menuConviteTxt'); if(ct) ct.textContent = 'Convidar '+(b===myName()?a:b);
 }
 
 /* ---------- LOGIN / CADASTRO / CASAL ---------- */
 const $g = id => document.getElementById(id);
 const FB = ()=>window.__firebase;
-let gMode = 'in', gStatusSel = 'namorando', jCoupleNames = null, pendingInviteCode = '';
+let gMode = 'in', gStatusSel = 'namorando', jCoupleInfo = null, pendingInviteCode = '';
 /* com a tela de entrada aberta, o app atrás dela não recebe foco do teclado nem é lido pelo leitor de tela */
 function bloquearFundo(on){ Array.from(document.body.children).forEach(el=>{ if(el.id!=='gate' && el.tagName!=='SCRIPT') el.inert = on; }); }
 function gateShow(p){
@@ -3362,9 +3456,9 @@ function gateShow(p){
   g.scrollTop = 0;
   if(p==='choose'){
     $g('gHello').textContent = 'Oi, '+(ME && ME.name ? ME.name.split(' ')[0] : 'bem-vindo(a)')+'!';
-    if(pendingInviteCode){ $g('jCode').value = pendingInviteCode; gateShow('join'); return; }
+    if(pendingInviteCode){ $g('jCode').value = pendingInviteCode; gateShow('join'); setTimeout(gateJoinLookup, 0); return; }
   }
-  if(p==='join'){ $g('jWho').style.display='none'; $g('jBtn').style.display='flex'; $g('jBtn').disabled=false; $g('jErr').textContent=''; jCoupleNames=null; }
+  if(p==='join'){ $g('jWho').style.display='none'; $g('jBtn').style.display='flex'; $g('jBtn').disabled=false; $g('jErr').textContent=''; jCoupleInfo=null; }
   if(p==='create'){ if(!$g('cMe').value) $g('cMe').value = (ME && ME.name ? ME.name.split(' ')[0] : ''); }
 }
 function gateHide(){ $g('gate').style.display = 'none'; bloquearFundo(false); }
@@ -3458,61 +3552,131 @@ async function gateCreate(){
     createdAt: Date.now()
   };
   const code = genCode();
+  docData.invite = genCode(); docData.inviteAt = docData.createdAt;
   try{
     await FB().db.createCouple(code, docData, FUND_MAX);
     await FB().db.set('users/'+ME.uid, { coupleId: code }, true);
   }catch(e){ console.error(e); err.textContent = authMsg(e); return; }
-  gateNewCode = code;
+  gateNewCode = code; conviteAtual = docData.invite; limparConvite();
   $g('iPartner').textContent = partner;
-  $g('iCode').textContent = code;
+  $g('iCode').textContent = conviteAtual;
   gateShow('invite');
 }
 function gateEnter(){ startCouple(gateNewCode); }
+let conviteAtual = '';
 function inviteText(code){
   const link = SITE_URL + '?convite=' + code;
-  return `Entra no nosso app de dates! 💕\nCódigo: ${code}\n${link}\n(o convite vale por 7 dias)`;
+  return `Oi, amor! 💕 Criei um cantinho só nosso pra guardar nossos dates. Toca aqui pra entrar:\n${link}\n\nSe pedir, o código é ${code} (vale por 7 dias).`;
 }
-async function shareInvite(code){
-  const text = inviteText(code);
-  try{
-    if(navigator.share){ await navigator.share({ title:'Nossos Dates', text }); return; }
-  }catch(e){ if(e && e.name==='AbortError') return; }
-  try{ await navigator.clipboard.writeText(text); alert('Convite copiado! Cole numa conversa.'); }
-  catch(e){ prompt('Copie o convite:', text); }
-}
+/* compartilhamento nativo; sem ele, abre o WhatsApp */
+function shareInvite(code){ if(code) compartilharTexto(inviteText(code)); }
 async function openConvite(){
-  if(coupleDoc && coupleDoc.closed){ alert('Por segurança, este espaço foi fechado para novas entradas porque uma pessoa saiu. Para convidar alguém, escreva para contato@nossosdates.com.br.'); return; }
-  const code = currentCoupleCode();
+  const id = currentCoupleCode(); if(!id || !coupleDoc) return;
+  if((coupleDoc.members||[]).length >= 2){ alert('Vocês já são 2 por aqui 💕 O casal está completo.'); return; }
+  const from = myName() || 'Seu amor';
+  let code = coupleDoc.invite || '';
+  try{
+    if(code){
+      try{ await FB().db.renewInvite(id, code, from); }
+      catch(e){ console.warn(e); const novo = genCode(); await FB().db.newInvite(id, novo, from, code); code = novo; }
+    } else { code = genCode(); await FB().db.newInvite(id, code, from, ''); }
+  }catch(e){ console.error(e); alert('Não consegui preparar o convite agora. Confere a internet e tenta de novo.'); return; }
+  conviteAtual = code;
   $g('cvCode').textContent = code; openOverlayEl('overlayConvite');
-  if(code && coupleDoc && (coupleDoc.members||[]).length < 2){ try{ await FB().db.renewInvite(code); }catch(e){ console.error(e); } }
 }
+function guardarConvite(code){ pendingInviteCode = code; try{ localStorage.setItem('nd_convite', code); }catch(e){} }
+function limparConvite(){ pendingInviteCode = ''; try{ localStorage.removeItem('nd_convite'); }catch(e){} }
+const MSG_CONVITE_INVALIDO = 'Esse convite não vale mais: ele venceu, foi trocado ou o código está errado. Peça um convite novo 💕';
+const MSG_CASAL_CHEIO = 'Esse casal já está completo 💕 Cada espaço é só para 2 pessoas. Se o convite era pra você, peça para a pessoa conferir.';
+async function lerCasal(id){ try{ const d = await FB().db.get('couples/'+id); return (d && (d.members||[]).includes(ME.uid)) ? d : null; }catch(e){ if(e && e.code==='permission-denied') return null; throw e; } }
 async function gateJoinLookup(){
   const err = $g('jErr'); err.textContent = '';
   const code = $g('jCode').value.trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
   if(code.length<6){ err.textContent = 'Digite o código completo.'; return; }
   const btn = $g('jBtn'); btn.disabled = true;
   try{
-    const d = await FB().db.get('couples/'+code);
-    if(!d){ err.textContent = 'Não achei esse código. Confere com seu(sua) parceiro(a).'; btn.disabled = false; return; }
-    if((d.members||[]).includes(ME.uid)){ await FB().db.set('users/'+ME.uid,{coupleId:code}, true); startCouple(code); return; }
-    const names = d.couple && d.couple.names;
-    if(!names || names.length!==2){ err.textContent = 'Esse convite está com problema.'; btn.disabled = false; return; }
-    jCoupleNames = { code, names };
-    $g('jWhoBtns').innerHTML = names.map((n,i)=>`<button type="button" class="g-btn ghost" onclick="gateJoin(${i})">${escapeHtml(n)}</button>`).join('');
+    const inv = await FB().db.get('invites/'+code);
+    if(!inv){ err.textContent = MSG_CONVITE_INVALIDO; btn.disabled = false; return; }
+    if(await lerCasal(inv.couple)){ limparConvite(); await FB().db.set('users/'+ME.uid,{coupleId:inv.couple}, true); startCouple(inv.couple); return; }
+    if(inv.full){ err.textContent = MSG_CASAL_CHEIO; limparConvite(); btn.disabled = false; return; }
+    jCoupleInfo = { id: inv.couple, code, from: String(inv.from || 'Seu amor') };
+    $g('jConf').textContent = jCoupleInfo.from + ' te convidou pra dividir o cantinho de dates de vocês. Quer entrar?';
+    $g('jName').value = (ME && ME.name ? ME.name.split(' ')[0] : '');
     $g('jWho').style.display = 'block'; $g('jBtn').style.display = 'none';
   }catch(e){
     console.error(e);
-    err.textContent = (e && e.code==='permission-denied') ? 'Esse código não vale mais: o casal já está completo, o convite venceu ou o código está errado. Peça para a outra pessoa abrir "Convidar" de novo.' : authMsg(e);
+    err.textContent = (e && e.code==='permission-denied') ? MSG_CONVITE_INVALIDO : authMsg(e);
   }
   btn.disabled = false;
 }
-async function gateJoin(i){
+async function gateJoin(){
   const err = $g('jErr'); err.textContent = '';
+  const nome = $g('jName').value.trim().slice(0,40);
+  if(!jCoupleInfo) return;
+  if(!nome){ err.textContent = 'Escreva o seu nome.'; return; }
+  const btn = $g('jOk'); btn.disabled = true;
   try{
-    await FB().db.join(jCoupleNames.code, ME.uid, jCoupleNames.names[i]);
-    await FB().db.set('users/'+ME.uid, { coupleId: jCoupleNames.code }, true);
-    startCouple(jCoupleNames.code);
+    await FB().db.join(jCoupleInfo.id, ME.uid, nome, jCoupleInfo.code);
+  }catch(e){ console.error(e); err.textContent = (e && e.code==='permission-denied') ? 'Não deu pra entrar: esse casal já está completo ou o convite venceu. Peça um convite novo 💕' : authMsg(e); btn.disabled = false; return; }
+  try{
+    await FB().db.set('users/'+ME.uid, { coupleId: jCoupleInfo.id }, true);
+    try{ await FB().db.set('couples/'+jCoupleInfo.id, { couple: { names: [jCoupleInfo.from, nome] } }, true); }catch(e){ console.warn(e); }
+    limparConvite(); startCouple(jCoupleInfo.id);
   }catch(e){ console.error(e); err.textContent = authMsg(e); }
+  btn.disabled = false;
+}
+
+/* ---------- SAIR DO CASAL / REMOVER ---------- */
+let listasGuardadas = [];
+const TXT_SAIR = 'Vocês deixam de compartilhar esta lista. Seu Pro continua com você, e a lista fica guardada com o casal. Cada fase tem seu tempo. Quando quiser, é só entrar ou criar um novo casal.';
+function limparTelaDoCasal(){
+  if(unwatchCouple){ try{ unwatchCouple(); }catch(e){} unwatchCouple = null; }
+  document.querySelectorAll('.overlay.open').forEach(o=>o.classList.remove('open'));
+  state = blankState(); coupleRef = null; coupleDoc = null; conviteAtual = '';
+}
+async function sairDoCasal(){
+  const id = currentCoupleCode(); if(!id || !coupleDoc) return;
+  if(!confirm(TXT_SAIR)) return;
+  const sozinho = (coupleDoc.members||[]).length <= 1, code = coupleDoc.invite || '';
+  try{
+    if(sozinho){
+      /* quem está só não apaga nada: o espaço fica guardado e dá pra voltar */
+      listasGuardadas = [...new Set([...listasGuardadas, id])];
+      limparTelaDoCasal();
+      await FB().db.set('users/'+ME.uid, { coupleId: '', listasGuardadas }, true);
+    } else {
+      limparTelaDoCasal();
+      await FB().db.leave(id, ME.uid, code);
+      await FB().db.set('users/'+ME.uid, { coupleId: '' }, true);
+    }
+    closeOverlay('overlayMenu'); const vb = $g('gVoltarLista'); if(vb) vb.style.display = listasGuardadas.length ? 'flex' : 'none'; gateShow('choose');
+  }catch(e){ console.error(e); alert('Não consegui sair agora. Confere a internet e tenta de novo.'); startCouple(id); }
+}
+async function voltarListaGuardada(){
+  const id = listasGuardadas[listasGuardadas.length-1]; if(!id) return;
+  try{
+    if(!(await lerCasal(id))) throw new Error('sem acesso');
+    await FB().db.set('users/'+ME.uid, { coupleId: id }, true); startCouple(id);
+  }catch(e){ console.error(e); alert('Não consegui abrir a lista guardada.'); }
+}
+async function removerCompanheiro(){
+  const id = currentCoupleCode(); if(!id || !coupleDoc || (coupleDoc.members||[]).length < 2) return;
+  if(!planInfo().pro){ alert('Remover companheiro(a) é uma função do Pro. Sem o Pro, você ainda pode usar "Sair do casal".'); return; }
+  const outro = coupleDoc.members.find(u=>u!==ME.uid);
+  const nome = (coupleDoc.memberNames && coupleDoc.memberNames[outro]) || 'a outra pessoa';
+  if(!confirm('Remover '+nome+' deste casal? A lista continua com você e a vaga fica livre. O convite antigo deixa de valer.')) return;
+  const novo = genCode(), meu = myName() || 'Seu amor';
+  try{
+    await FB().db.removePartner(id, outro, coupleDoc.invite || '', novo, meu);
+    try{ await FB().db.set('couples/'+id, { couple: { names: [meu, 'Seu amor'] } }, true); }catch(e){ console.warn(e); }
+    closeOverlay('overlayMenu'); conviteAtual = novo; $g('cvCode').textContent = novo; openOverlayEl('overlayConvite');
+  }catch(e){ console.error(e); alert('Não consegui remover agora. Confere a internet e tenta de novo.'); }
+}
+/* a pessoa foi removida (ou o casal deixou de existir): volta para criar ou entrar, sem apagar nada dela */
+function foraDoCasal(){
+  limparTelaDoCasal();
+  gateShow('choose');
+  if(!pendingInviteCode) $g('gHello').textContent = 'Você não está mais naquele casal 💕';
 }
 async function onAuth(user){
   if(!user){
@@ -3531,7 +3695,15 @@ async function onAuth(user){
     }
     surpresas = (u && Array.isArray(u.surpresas)) ? u.surpresas.filter(p=>p && typeof p==='object').map(sanitizePlace) : [];
     notifPrefs = Object.assign({}, NOTIF_DEFAULT, (u && u.notif) || {});
+    listasGuardadas = (u && Array.isArray(u.listasGuardadas)) ? u.listasGuardadas.map(safeKey).filter(Boolean) : [];
+    const vb = $g('gVoltarLista'); if(vb) vb.style.display = listasGuardadas.length ? 'flex' : 'none';
     if(!u || !u.coupleId){ gateShow('choose'); return; }
+    if(pendingInviteCode && u.coupleId!=='legacy'){
+      const meu = await lerCasal(u.coupleId);
+      if(!meu){ gateShow('choose'); return; }   /* sem casal de verdade: segue para a confirmação do convite */
+      if(meu.invite !== pendingInviteCode) alert('Você já está em um casal. Para aceitar outro convite, primeiro use Menu → Sair do casal e depois abra o link de novo.');
+      limparConvite();
+    } else if(pendingInviteCode) limparConvite();
     startCouple(u.coupleId);
   }catch(e){
     console.error(e);
@@ -3548,8 +3720,10 @@ async function boot(){
     else window.addEventListener('firebase-ready', resolve, {once:true});
   });
   const lL = document.querySelector('.app-header .logo-l'), lD = document.querySelector('.app-header .logo-d'); if(lL) $g('gateLogoL').src = lL.src; if(lD) $g('gateLogoD').src = lD.src;
+  /* o convite fica guardado até o login ou cadastro terminar (mesmo se o Google recarregar a página) */
   const q = new URLSearchParams(location.search).get('convite');
-  if(q) pendingInviteCode = q.toUpperCase();
+  if(q){ guardarConvite(q.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,20)); try{ history.replaceState(null, '', location.pathname); }catch(e){} }
+  else { try{ pendingInviteCode = (localStorage.getItem('nd_convite')||'').replace(/[^A-Z0-9]/g,''); }catch(e){} }
   { const ab = document.getElementById('gAppleBtn'); if(ab && APPLE_LOGIN) ab.style.display = 'flex'; }
   gateShow('loading');
   if(!authBound){ authBound = true; FB().auth.onChange(onAuth); }
@@ -3619,10 +3793,13 @@ async function confirmarExcluir(){
     const uid = ME.uid;
     if(coupleRef && coupleRef.startsWith('couples/')){
       const code = currentCoupleCode();
-      if(coupleDoc && (coupleDoc.members||[]).length <= 1) await FB().db.remove('couples/'+code);
-      else await FB().db.leave(code, uid);
+      if(unwatchCouple){ try{ unwatchCouple(); }catch(e){} unwatchCouple = null; }
+      const conv = (coupleDoc && coupleDoc.invite) || '';
+      if(coupleDoc && (coupleDoc.members||[]).length <= 1) await FB().db.deleteCouple(code, conv);
+      else await FB().db.leave(code, uid, conv);
     }
     if(unwatchCouple){ try{ unwatchCouple(); }catch(e){} unwatchCouple = null; }
+    for(const g of listasGuardadas){ try{ const dg = await lerCasal(g); if(dg && dg.members.length<=1) await FB().db.deleteCouple(g, dg.invite||''); }catch(e){ console.warn(e); } }
     await FB().db.remove('users/'+uid);
     await FB().auth.deleteAccount();
     closeOverlay('overlayExcluir');
@@ -3673,7 +3850,7 @@ function openPlano(reason){
   const pi = planInfo();
   $g('planTitle').textContent = pi.pro ? 'Seu plano: Pro' : (reason ? 'Vá para o Pro' : 'Meu plano');
   $g('planSub').textContent = pi.pro
-    ? (pi.legacy ? 'Vocês têm o Pro de cortesia, sem limites. 💕' : pi.courtesy ? 'Vocês têm o Pro de cortesia, sem data para acabar. Obrigado por estarem com a gente! 💕' : pi.founder ? ('Casal Fundador nº '+pi.founder+': Pro grátis até '+formatDateLong(fmtDate(new Date(pi.until)))+'. Obrigado por estar com a gente desde o começo! 💕') : pi.launch ? ('Pro de lançamento: tudo liberado de graça até '+LAUNCH_END_TXT+'. Vamos avisar antes de acabar, e o que vocês já guardaram continua guardado.') : 'Obrigado por apoiar o app! Vocês têm todos os recursos.')
+    ? (pi.legacy ? 'Vocês têm o Pro de cortesia, sem limites. 💕' : pi.courtesy ? 'Vocês têm o Pro de cortesia, sem data para acabar. Obrigado por estarem com a gente! 💕' : pi.founder ? ('Casal Fundador nº '+pi.founder+': Pro grátis até '+formatDateLong(fmtDate(new Date(pi.until)))+'. Obrigado por estar com a gente desde o começo! 💕') : pi.launch ? 'Pro de lançamento: está tudo liberado pra vocês. O que vocês já guardaram continua guardado.' : 'Obrigado por apoiar o app! Vocês têm todos os recursos.')
     : (PAYWALL_MSG[reason] || `Vocês usam ${state.places.length} de ${FREE_LIMITS.places} ideias do plano grátis.`);
   $g('planFree').classList.toggle('current', !pi.pro);
   $g('planPro').classList.toggle('current', pi.pro);
@@ -3880,7 +4057,7 @@ function espIcs(i){
   const stamp = new Date().toISOString().replace(/[-:]/g,'').split('.')[0]+'Z';
   const lines = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Nossos Dates//PT','BEGIN:VEVENT',`UID:${x.key}-${x.base}@nossosdates`,`DTSTAMP:${stamp}`,
     `DTSTART;VALUE=DATE:${dg(d0)}`,`DTEND;VALUE=DATE:${dg(d1)}`,`RRULE:${x.rrule}`,`SUMMARY:💕 ${x.ev} — ${coupleLabel()}`,
-    'BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:Amanhã é uma data especial','TRIGGER:-PT15H','END:VALARM','END:VEVENT','END:VCALENDAR'];
+    ...alarmesICS(x.ev),'END:VEVENT','END:VCALENDAR'];
   const blob = new Blob([lines.join('\r\n')], {type:'text/calendar;charset=utf-8'});
   const url = URL.createObjectURL(blob), a = document.createElement('a');
   a.href = url; a.download = x.key+'.ics'; document.body.appendChild(a); a.click(); document.body.removeChild(a);
@@ -3972,6 +4149,74 @@ async function shareRetro(){
   try{ if(navigator.canShare && navigator.canShare({files:[file]})){ await navigator.share({files:[file], title:'Nossa retrospectiva '+st.year}); return; } }
   catch(e){ if(e && e.name==='AbortError') return; }
   const url = URL.createObjectURL(blob), a=document.createElement('a'); a.href=url; a.download=file.name; document.body.appendChild(a); a.click(); document.body.removeChild(a); setTimeout(()=>URL.revokeObjectURL(url),2000);
+}
+
+/* ---------- CARTÃO PARA STORIES (1080x1920, feito no próprio aparelho) ---------- */
+let storyFile = null, storyUrl = '';
+const STORY_FONTE = '"Plus Jakarta Sans", system-ui, -apple-system, sans-serif';
+function quebrarLinhas(ctx, texto, largura, maximo){
+  const palavras = String(texto).split(/\s+/).filter(Boolean), linhas = []; let atual = '';
+  for(const w of palavras){
+    const t = atual ? atual+' '+w : w;
+    if(ctx.measureText(t).width > largura && atual){ linhas.push(atual); atual = w; } else atual = t;
+  }
+  if(atual) linhas.push(atual);
+  const cortou = linhas.length > maximo, out = linhas.slice(0, maximo);
+  return out.map((l,i)=>{ let s = l, mais = cortou && i===out.length-1; while(s.length>1 && ctx.measureText(s+(mais?'…':'')).width > largura){ s = s.slice(0,-1); mais = true; } return s+(mais?'…':''); });
+}
+async function desenharStory(o){
+  try{ await Promise.all([document.fonts.load('800 100px "Plus Jakarta Sans"'), document.fonts.load('600 50px "Plus Jakarta Sans"')]); }catch(e){}
+  const W=1080, H=1920, c=document.createElement('canvas'); c.width=W; c.height=H; const x=c.getContext('2d');
+  x.fillStyle='#D9356F'; x.fillRect(0,0,W,H);
+  x.fillStyle='rgba(255,255,255,.09)'; [[W-60,230,330],[40,H-180,380],[W-140,H-520,130]].forEach(([a,b,r])=>{ x.beginPath(); x.arc(a,b,r,0,7); x.fill(); });
+  x.textAlign='center'; x.fillStyle='#FFF7F2';
+  x.font='800 62px '+STORY_FONTE; x.fillText('nossos dates', W/2, 270);
+  x.font='400 150px '+STORY_FONTE; x.fillText('♥', W/2, 520);
+  x.font='700 64px '+STORY_FONTE; x.fillText(o.topo, W/2, 700);
+  if(o.numero){
+    x.font='800 '+(o.numero.length>4?270:340)+'px '+STORY_FONTE; x.fillText(o.numero, W/2, 1070);
+    x.font='800 90px '+STORY_FONTE; x.fillText(o.unidade, W/2, 1210);
+  } else {
+    x.font='800 112px '+STORY_FONTE; quebrarLinhas(x, o.lugar, 920, 4).forEach((l,i)=>x.fillText(l, W/2, 880+i*138));
+  }
+  x.fillStyle='rgba(255,247,242,.92)'; x.font='600 50px '+STORY_FONTE; quebrarLinhas(x, o.rodape, 920, 2).forEach((l,i)=>x.fillText(l, W/2, 1500+i*66));
+  x.fillStyle='rgba(255,247,242,.8)'; x.font='700 44px '+STORY_FONTE; x.fillText('nossosdates.com.br', W/2, H-150);
+  return c;
+}
+/* a imagem é gerada ANTES de a pessoa tocar em Compartilhar: o iPhone só abre o compartilhamento direto de um toque */
+async function abrirStory(o, nomeArquivo){
+  const c = await desenharStory(o);
+  const blob = await new Promise(r=>c.toBlob(r,'image/png'));
+  if(!blob){ alert('Não consegui gerar a imagem neste aparelho.'); return; }
+  storyFile = new File([blob], nomeArquivo, {type:'image/png'});
+  if(storyUrl) URL.revokeObjectURL(storyUrl);
+  storyUrl = URL.createObjectURL(blob);
+  $g('storyImg').src = storyUrl;
+  openOverlayEl('overlayStory');
+}
+function openStoryJuntos(){
+  const conhecendo = state.status==='conhecendo';
+  const ref = conhecendo ? state.firstDate : (state.startDate || state.weddingDate || state.firstDate);
+  const hoje = new Date(); hoje.setHours(0,0,0,0);
+  const dias = ref ? Math.round((hoje - parseDate(ref))/86400000) : NaN;
+  if(!(dias >= 0)){ alert('Conte primeiro desde quando vocês estão juntos, em Menu → Nossa história.'); return; }
+  abrirStory({ topo: conhecendo ? 'Se conhecendo há' : 'Juntos há', numero: dias.toLocaleString('pt-BR'), unidade: dias===1?'dia':'dias', rodape: coupleLabel() }, 'juntos-ha-'+dias+'-dias.png');
+}
+function openStoryDate(id){
+  const e = state.events.find(ev=>ev.id===id); if(!e) return;
+  const p = state.places.find(pl=>pl.id===e.placeId);
+  const dia = parseDate(e.date).toLocaleDateString('pt-BR', {day:'numeric', month:'long', year:'numeric'});
+  abrirStory({ topo:'Date feito:', lugar: p ? p.name : 'Um date especial', rodape: dia+' · '+coupleLabel() }, 'date-feito-'+e.date+'.png');
+}
+async function compartilharStory(){
+  if(!storyFile) return;
+  try{ if(navigator.canShare && navigator.canShare({files:[storyFile]})){ await navigator.share({files:[storyFile]}); return; } }
+  catch(e){ if(e && e.name==='AbortError') return; }
+  baixarStory();
+}
+function baixarStory(){
+  if(!storyFile) return;
+  const a = document.createElement('a'); a.href = storyUrl; a.download = storyFile.name; document.body.appendChild(a); a.click(); a.remove();
 }
 
 /* ---------- PRO: pacotes de dates ---------- */
