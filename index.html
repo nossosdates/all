@@ -2828,18 +2828,18 @@ function abrirCompartilhar(o){
     shUrl = URL.createObjectURL(blob); img.src = shUrl; img.style.display = 'block'; btn.disabled = false;
   }, 'image/png')).catch(e=>console.error(e));
 }
-function mensagemShare(){
+/* mensagem curta: recadinho, o essencial e o link. No cartão, a imagem já mostra os detalhes: vai só recadinho + link */
+function mensagemShare(comoCartao){
   const o = shDados, recado = $g('shMsg').value.trim();
   const partes = [];
   if(recado) partes.push(recado);
-  if(o.detalhes.length) partes.push(o.detalhes.join('\n'));
-  partes.push(o.link);
+  if(!comoCartao && o.detalhes.length) partes.push(o.detalhes.join('\n'));
+  partes.push((comoCartao ? '' : '👇 Toca pra ver\n') + o.link);
   return partes.join('\n\n');
-}
-function enviarShareLink(){ if(!shDados) return; const t = mensagemShare(); closeOverlay('overlayShare'); compartilharTexto(t); }
+}function enviarShareLink(){ if(!shDados) return; const t = mensagemShare(); closeOverlay('overlayShare'); compartilharTexto(t); }
 async function enviarShareCartao(){
   if(!shDados || !shFile) return;
-  const texto = mensagemShare();
+  const texto = mensagemShare(true);
   try{
     if(navigator.canShare && navigator.canShare({files:[shFile]})){ await navigator.share({ files:[shFile], text: texto }); closeOverlay('overlayShare'); return; }
   }catch(e){ if(e && e.name==='AbortError') return; console.warn(e); }
@@ -2851,23 +2851,22 @@ async function copiarShare(){
   try{ await navigator.clipboard.writeText(t); alert('Mensagem copiada!'); }catch(e){ prompt('Copie a mensagem:', t); }
 }
 const dataPorExtenso = ds => { const t = parseDate(ds).toLocaleDateString('pt-BR', {weekday:'long', day:'numeric', month:'long'}); return t.charAt(0).toUpperCase()+t.slice(1); };
+const umaLinha = t => String(t||'').replace(/\s*\n\s*/g,' ').trim();
 function detalhesDaIdeia(p){
-  const c = catInfo(p.category), l = ['*'+p.name+'*', '🏷️ *Categoria:* '+c.label];
-  if(p.city) l.push('📍 *Cidade:* '+p.city);
-  if(p.notes) l.push('📝 *Observações:* '+p.notes);
+  const l = ['*'+p.name+'*', [catInfo(p.category).label, p.city].filter(Boolean).join(' · ')];
+  if(p.notes) l.push('_'+umaLinha(p.notes)+'_');
   return l;
-}
-function compartilharIdeia(id){
+}function compartilharIdeia(id){
   const p = state.places.find(pl=>pl.id===id); if(!p) return;
   const c = catInfo(p.category);
-  abrirCompartilhar({ titulo:'Compartilhar ideia', link: SITE_URL+'ideia.html?i='+p.id, detalhes: detalhesDaIdeia(p),
+  abrirCompartilhar({ titulo:'Compartilhar ideia', link: SITE_URL+'ideia?i='+p.id, detalhes: detalhesDaIdeia(p),
     frases:['Amor, guardei essa ideia pra gente não esquecer 💕', 'Bora fazer esse logo? 😍', 'Olha o que eu coloquei na nossa lista ✨'],
     card:{ topo:'Ideia de date', lugar:p.name, rodape:[c.label, p.city].filter(Boolean).join(' · ') }, arquivo:'ideia-de-date.png' });
 }
 function compartilharSorteio(){
   const id = sorteioCurrentResult && sorteioCurrentResult.id;
   const p = state.places.find(pl=>pl.id===id); if(!p) return;
-  abrirCompartilhar({ titulo:'Compartilhar sorteio', link: SITE_URL+'ideia.html?i='+p.id, detalhes: ['🎲 *O sorteio escolheu:*', ...detalhesDaIdeia(p)],
+  abrirCompartilhar({ titulo:'Compartilhar sorteio', link: SITE_URL+'ideia?i='+p.id, detalhes: detalhesDaIdeia(p),
     frases:['A sorte decidiu nosso próximo date! 🎲', 'Sem desculpa: foi o sorteio que escolheu 😂', 'Topa? 💕'],
     card:{ topo:'O sorteio escolheu', lugar:p.name, rodape:coupleLabel() }, arquivo:'sorteio-do-date.png' });
 }
@@ -2875,19 +2874,19 @@ function compartilharSorteio(){
 function compartilharDate(id){
   const e = state.events.find(ev=>ev.id===id); if(!e) return;
   const p = state.places.find(pl=>pl.id===e.placeId), nome = p ? p.name : 'Date', quando = dataPorExtenso(e.date);
-  const detalhes = ['*'+nome+'*', '🗓️ '+quando]; if(e.note) detalhes.push('📝 '+e.note);
-  abrirCompartilhar({ titulo:'Compartilhar date', link: SITE_URL+'date.html?i='+e.id, detalhes,
+  const detalhes = ['*'+nome+'*', '🗓️ '+quando]; if(e.note) detalhes.push('_'+umaLinha(e.note)+'_');
+  abrirCompartilhar({ titulo:'Compartilhar date', link: SITE_URL+'date?i='+e.id, detalhes,
     frases:['Amor, já coloquei no nosso calendário 📅💕', 'Reserva esse dia pra gente? 😘', 'Contando os dias! ✨'],
     card:{ topo:'Date marcado', lugar:nome, rodape:quando }, arquivo:'date-marcado.png' });
 }
 function compartilharEspecial(i){
   const x = specialSeries()[i]; if(!x) return;
-  abrirCompartilhar({ titulo:'Compartilhar data especial', link: SITE_URL+'conheca.html', detalhes:['💞 *'+x.title+'*', '🗓️ '+dataPorExtenso(fmtDate(x.next))],
+  abrirCompartilhar({ titulo:'Compartilhar data especial', link: SITE_URL+'conheca', detalhes:['*'+x.title+'*', '🗓️ '+dataPorExtenso(fmtDate(x.next))],
     frases:['Tá chegando o nosso dia 💕', 'Vamos comemorar como? 🥂', 'Não esquece, hein! 😘'],
     card:{ topo:x.ev, lugar:x.title, rodape:dataPorExtenso(fmtDate(x.next))+' · '+coupleLabel() }, arquivo:'data-especial.png' });
 }
 function indicarApp(){
-  abrirCompartilhar({ titulo:'Indicar pra um casal amigo', link: SITE_URL+'conheca.html', detalhes:[],
+  abrirCompartilhar({ titulo:'Indicar pra um casal amigo', link: SITE_URL+'conheca', detalhes:[],
     frases:['Olha esse app que a gente tá usando pra guardar os dates 💕', 'Pra vocês não ficarem no "sei lá, escolhe você" 😂', 'Testa e me conta o que achou!'] });
 }
 /* aviso no rodapé com ações de um toque */
